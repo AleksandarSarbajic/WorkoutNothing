@@ -58,7 +58,7 @@ function Calculator() {
   const [lift, setLift] = useState("");
   const [unit, setUnit] = useState(settings?.weight || "kg");
   const [repetitions, setRepetitions] = useState(1);
-  console.log(unit);
+
   const oneRepMaxes = ONE_RM_CALCULATION.map(
     (item: { repetitions: number; percentage: number }, i: number) => {
       const oneRm = Math.round(+lift * repetitions * item.percentage) / 100;

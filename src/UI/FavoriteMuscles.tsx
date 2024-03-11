@@ -156,7 +156,6 @@ interface ChartProps {
 }
 
 function DashboardWorkoutsChart({ workouts, heading }: ChartProps) {
-  console.log(workouts);
   const { isDarkMode } = useDarkMode();
   const startData = isDarkMode ? startDataDark : startDataLight;
   const data = prepareData(startData, workouts);

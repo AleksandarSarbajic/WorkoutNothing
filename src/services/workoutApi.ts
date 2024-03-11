@@ -41,7 +41,7 @@ export async function insertWorkout({ workout }: WorkoutProps) {
     unit: workout.unit,
     records: totalCount,
   };
-  console.log(item);
+
   const { data, error } = await supabase
     .from("Workouts")
     .insert([{ ...item }])

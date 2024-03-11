@@ -165,7 +165,7 @@ function ExerciseRow({
     };
 
     const exercise = user_exercise?.length !== 0 ? extracted : exerciseTemplate;
-    console.log(user_exercise);
+
     if (!exerciseParams) {
       dispatch({ type: "SELECT_EXERCISES", payload: exercise });
     } else {

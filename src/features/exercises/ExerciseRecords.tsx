@@ -30,7 +30,7 @@ const StyledP = styled.p`
 function ExerciseRecords() {
   const { settings } = useSettings();
   const { user_exercise = [], isLoading } = useRecordsExercise();
-  console.log(user_exercise, "user_exercise");
+
   if (user_exercise.length === 0)
     return (
       <div>

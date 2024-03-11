@@ -68,7 +68,7 @@ function DashboardWorkoutsChart({ workouts, heading }: ChartProps) {
           };
         })
       : workoutsChart;
-  console.log(values);
+
   const colors = isDarkMode
     ? {
         totalSales: { stroke: "#4f46e5", fill: "#4f46e5" },

@@ -14,7 +14,7 @@ function useInsertWorkout() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["workout"] });
-      console.log(data);
+
       navigate(`/history/${data[0].id}`);
     },
   });

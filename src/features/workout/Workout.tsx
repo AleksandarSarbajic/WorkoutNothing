@@ -603,7 +603,7 @@ function Note({
   } = useContext(WorkoutContext);
   const noteValue = exercises.find((exercise) => exercise.note.uniqueId === id)
     ?.note.value;
-  // console.log(noteValue);
+ 
   return (
     <StyledNote $pinned={isPinned}>
       <input
@@ -944,7 +944,7 @@ function SetButton({
       payload: { setId, exerciseId, type },
     });
   }
-  // console.log(set);
+
   const textTypes =
     set.type === "straight"
       ? set.set

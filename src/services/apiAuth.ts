@@ -127,8 +127,6 @@ export async function deleteAvatar() {
 
   if (error) throw new Error(error.message);
 
-  console.log(data.user.user_metadata.avatar_file);
-
   const { error: StorageError } = await supabase.storage
     .from("avatars")
     .remove([data.user.user_metadata.avatar_file]);

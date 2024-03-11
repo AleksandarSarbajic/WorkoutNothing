@@ -13,7 +13,7 @@ import Select from "../../UI/Select";
 
 function UpdateUserDataForm() {
   const { user } = useUser();
-  console.log(user);
+
   const currentFullName =
     user?.user_metadata.full_name || user?.user_metadata.userName;
   const currentGender = user?.user_metadata.gender || "male";

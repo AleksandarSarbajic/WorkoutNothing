@@ -83,7 +83,7 @@ export async function updateExercise(exercise: {
     muscle: exercise.body,
     equipment: exercise.category,
   };
-  console.log(exercise);
+
   const { data, error } = await supabase
     .from("exercises")
     .update([updatedExercise])

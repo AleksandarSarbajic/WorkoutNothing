@@ -272,7 +272,6 @@ function startWorkout(
 
 function performWorkoutAgain(_: InitialStateType, payload: WorkoutSupabase) {
   const { exercises, name, note, superSets, unit } = payload;
-  console.log(payload);
 
   return {
     ...InitialState,
@@ -309,7 +308,7 @@ function startTemplate(
   }
 ) {
   const { item, unit, settings } = payload;
-  console.log(payload);
+
   return {
     ...InitialState,
     exercises: item.exercises.map((exercise) => {
@@ -350,7 +349,7 @@ function editTemplate(
   payload: { item: TemplateTypes; unit: string }
 ) {
   const { item, unit } = payload;
-  console.log(item.created_at);
+
   return {
     ...InitialState,
     exercises: item.exercises.map((exercise) => {
@@ -536,7 +535,7 @@ function addSet(
             set: allSetsAreNull ? 1 : existingSet.set,
             id: uuidv4(),
           };
-          console.log("1");
+
           return { ...exercise, sets: [...exercise.sets, existingSetChanged] };
         }
         return exercise;
@@ -545,7 +544,6 @@ function addSet(
     } else {
       const updatedExercises = state.exercises.map((exercise) => {
         if (exercise.uniqueId === exerciseId) {
-          console.log(2);
           return { ...exercise, sets: [...exercise.sets, set] };
         }
         return exercise;
@@ -613,7 +611,6 @@ function deleteSet(
               : set.set
             : null,
       }));
-      console.log(updatedSetsWithAdjustedIndices);
 
       if (updatedSetsWithAdjustedIndices.length === 0) {
         return null;
@@ -636,7 +633,7 @@ function updateSet(
   payload: UpdateSetPayload
 ): InitialStateType {
   const { setId, exerciseId, type, weight, reps, select } = payload;
-  console.log(payload);
+
   const guardCloseItem = state.exercises.find(
     (item) => item.uniqueId === exerciseId
   );
@@ -681,7 +678,7 @@ function updateSet(
 
     return exercise;
   });
-  console.log(guard, type);
+
   if (
     (guard?.type === "straight" && type === "drop") ||
     (guard?.type === "straight" && type === "failure") ||
@@ -900,7 +897,6 @@ function createSuperSet(
               const filteredItems = item.items.filter(
                 (item) => !state.selectedSuperSets.includes(item)
               );
-              console.log("2");
 
               return {
                 ...item,
@@ -916,8 +912,6 @@ function createSuperSet(
           );
           const existingItems = state.superSets.map((item) => {
             if (item.id === setWithMostItems.id) {
-              console.log("3");
-
               return {
                 ...item,
                 items: [...item.items, ...filteredItems],
@@ -926,7 +920,6 @@ function createSuperSet(
               const filteredItems = item.items.filter(
                 (item) => !state.selectedSuperSets.includes(item)
               );
-              console.log("4");
 
               return {
                 ...item,
@@ -972,7 +965,7 @@ function createSuperSet(
               return item;
             })
             .filter((item) => item.items.length > 0);
-          console.log(updatedSuperSets);
+         
           return {
             ...state,
             superSets: updatedSuperSets,

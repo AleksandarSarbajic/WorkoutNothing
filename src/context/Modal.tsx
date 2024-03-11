@@ -148,7 +148,7 @@ function Window({ children, name, padding = false, addition }: WindowType) {
     }
     close();
   });
-  // console.log(disabled);
+
   if (name !== openName) return null;
 
   return (

@@ -133,7 +133,7 @@ function WorkoutItem() {
   const { settings } = useSettings();
   const { workout, isLoading } = useWorkout();
   const workoutType = workout as WorkoutSupabase;
-  console.log(workoutType);
+
   if (isLoading)
     return (
       <Skeleton

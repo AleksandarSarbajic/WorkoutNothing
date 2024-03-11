@@ -259,7 +259,7 @@ function ModalItem() {
     isOpen,
   } = useContext(TimerContext);
   const { settings } = useSettings();
-  console.log(settings);
+
   const initialStartDate = (() => {
     const date = new Date();
     date.setHours(5, 0, 0, 0);
