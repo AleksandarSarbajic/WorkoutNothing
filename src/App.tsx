@@ -12,7 +12,8 @@ import AppLayout from "./UI/AppLayout";
 import { Suspense, lazy } from "react";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import { SkeletonTheme } from "react-loading-skeleton";
-import Spinner from "./UI/Spinner";
+
+import SpinnerFullPage from "./UI/SpinnerFullPage";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignUpPage = lazy(() => import("./pages/SignUpPage"));
@@ -128,7 +129,7 @@ function App() {
     <>
       <DarkModeProvider>
         <GlobalStyles />
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<SpinnerFullPage />}>
           <QueryClientProvider client={queryClient}>
             <ReactQueryDevtools initialIsOpen={false} />
             <SkeletonTheme

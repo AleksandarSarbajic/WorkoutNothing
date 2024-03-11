@@ -12,6 +12,7 @@ import MeasureItemRow from "../features/measures/MeasureItemRow";
 import Modal from "../context/Modal";
 import { useSettings } from "../features/settings/useSettings";
 import { adjustMeasurement } from "../utils/helpers";
+import Spinner from "../UI/Spinner";
 
 function MeasurePage() {
   const { measure = {}, isLoading } = useMeasure();
@@ -38,7 +39,7 @@ function MeasurePage() {
   }) as SingleMeasure[];
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   return (

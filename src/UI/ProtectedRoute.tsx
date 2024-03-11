@@ -4,11 +4,12 @@ import { useUser } from "../features/auth/useUser";
 import { useEffect } from "react";
 import Workout from "../features/workout/Workout";
 import Timer from "../context/Timer";
-// import DottedLoading from "./DottedLoading";
+import Spinner from "./Spinner";
 
 const FullPage = styled.div`
   height: 100vh;
-  background-color: var(--bg-color);
+  width: 100dvw;
+  background-color: var(--color-grey-50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,7 +26,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (isLoading)
     return (
       <FullPage>
-        <p>Loading...</p>
+        <Spinner />
       </FullPage>
     );
 
