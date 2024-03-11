@@ -9,24 +9,28 @@ import {
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./UI/ProtectedRoute";
 import AppLayout from "./UI/AppLayout";
-import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/SignUpPage";
-import PageNotFound from "./pages/PageNotFount";
+import { lazy } from "react";
 import { DarkModeProvider } from "./context/DarkModeContext";
-import ExercisesPage from "./pages/ExercisesPage";
 import { SkeletonTheme } from "react-loading-skeleton";
-import ExercisePage from "./pages/ExercisePage";
-import MeasuresPage from "./pages/MeasuresPage";
-import MeasurePage from "./pages/MeasurePage";
-import SettingsPage from "./pages/SettingsPage";
-import ProfilePage from "./pages/ProfilePage";
 
-import WorkoutPage from "./pages/WorkoutPage";
-import HistoryPage from "./pages/HistoryPage";
-import HistoryWorkoutPage from "./pages/HistoryWorkoutPage";
-import WorkoutTemplatePage from "./pages/WorkoutTemplatePage";
-import CalculatorPage from "./pages/CalculatorPage";
-import Dashboard from "./pages/Dashboard";
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const SignUpPage = lazy(() => import("./pages/SignUpPage"));
+const PageNotFound = lazy(() => import("./pages/PageNotFount"));
+const ExercisesPage = lazy(() => import("./pages/ExercisesPage"));
+const ExercisePage = lazy(() => import("./pages/ExercisePage"));
+
+const MeasuresPage = lazy(() => import("./pages/MeasuresPage"));
+const MeasurePage = lazy(() => import("./pages/MeasurePage"));
+
+const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+
+const WorkoutPage = lazy(() => import("./pages/WorkoutPage"));
+const HistoryPage = lazy(() => import("./pages/HistoryPage"));
+const HistoryWorkoutPage = lazy(() => import("./pages/HistoryWorkoutPage"));
+const WorkoutTemplatePage = lazy(() => import("./pages/WorkoutTemplatePage"));
+const CalculatorPage = lazy(() => import("./pages/CalculatorPage"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 
 const queryClient = new QueryClient({
   defaultOptions: {

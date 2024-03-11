@@ -77,6 +77,7 @@ export interface BestPerformaceType {
   maxWeight: number;
   exercise: ExerciseType;
   id: string;
+  name?: string;
 }
 
 export interface InitialStateType {

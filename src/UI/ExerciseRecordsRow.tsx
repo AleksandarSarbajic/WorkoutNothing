@@ -14,6 +14,7 @@ export interface maxWeightsForRepsProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   exercise: any;
   id: string;
+  name?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

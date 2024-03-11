@@ -164,6 +164,7 @@ function Body({
           weight: number;
           unit: string;
           id?: number;
+          name?: string;
         },
     i: number
   ) => ReactElement;
