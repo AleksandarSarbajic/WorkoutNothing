@@ -13,6 +13,9 @@ import useTemplates from "../features/templates/useTemplates";
 import { TemplateTypes } from "../types/TemplateTypes";
 import useRecordsExercises from "../features/exercises/useRecordsExercises";
 import useExercises from "../features/exercises/useExercises";
+import useCreateSettings from "../features/settings/useCreateSettings";
+import { useEffect } from "react";
+import useCreateMeasures from "../features/measures/useCreateMeasures";
 
 const ProfileBox = styled.div`
   display: flex;
@@ -46,6 +49,13 @@ function Dashboard() {
     useRecordsExercises();
   const { exercises, isLoading: isLoadingExercises } = useExercises({
     filter: null,
+  });
+
+  const { insertSettings } = useCreateSettings();
+  const { insertMeasures } = useCreateMeasures();
+  useEffect(() => {
+    insertSettings(user?.id);
+    insertMeasures(user?.id);
   });
 
   const matchedExercises = user_exercises?.map((userExercise) => {

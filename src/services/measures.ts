@@ -63,3 +63,25 @@ export async function addMeasure({
 
   return data;
 }
+
+export async function createMeasures(id?: string | undefined) {
+  if (id === undefined) return null;
+
+  const { data: userData } = await supabase
+    .from("measures")
+    .select()
+    .eq("user_id", id);
+
+  if (userData && userData.length > 0) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("measures")
+    .insert([{ created_at: new Date().toISOString(), user_id: id }])
+    .select();
+
+  if (error) throw new Error("Measures could not be created");
+
+  return data;
+}
