@@ -4,7 +4,7 @@ const AuthInput = styled.input`
   display: block;
   width: 100%;
   height: calc(5.6rem + 2px);
-  padding: 1.6rem 0;
+  padding: 1.6rem 1rem;
 
   color: var(--login-color);
   background-color: transparent;
