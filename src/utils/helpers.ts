@@ -1,21 +1,21 @@
 import {
   compareAsc,
   eachDayOfInterval,
-  eachMonthOfInterval,
+  eachWeekOfInterval,
+  endOfWeek,
   format,
   formatDistance,
   isSameDay,
-  isSameMonth,
+  isSameWeek,
   parse,
   parseISO,
   subDays,
-  subMonths,
+  subWeeks,
 } from "date-fns";
 // import { differenceInDays } from "date-fns/esm";
 import { Database } from "../services/supabase";
 import {
   BestPerformaceRecordsType,
-  BestPerformaceType,
   ExerciseType,
   SetType,
   WorkoutSupabase,
@@ -82,11 +82,6 @@ export function formatTimeToDate(time: string) {
   return currentDate;
 }
 
-export const formatCurrency = (value: number) =>
-  new Intl.NumberFormat("en", { style: "currency", currency: "USD" }).format(
-    value
-  );
-
 export const compareTimes = (time1: string | null) => {
   if (time1 === null) {
     return 0;
@@ -99,35 +94,6 @@ export const compareTimes = (time1: string | null) => {
 
   return comparisonResult;
 };
-export function sortByStatus(
-  a: Database["public"]["Tables"]["Tasks"]["Row"],
-  b: Database["public"]["Tables"]["Tasks"]["Row"]
-) {
-  if (a.status === "completed" && b.status === "incomplete") {
-    return 1;
-  } else if (a.status === "incomplete" && b.status === "completed") {
-    return -1;
-  } else {
-    return 0;
-  }
-}
-export function sortByName(
-  a: Database["public"]["Tables"]["Tasks"]["Row"],
-  b: Database["public"]["Tables"]["Tasks"]["Row"],
-  type: boolean
-) {
-  if (type) {
-    return a.task_name.localeCompare(b.task_name);
-  } else {
-    if (a.task_name > b.task_name) {
-      return -1;
-    } else if (a.task_name < b.task_name) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-}
 
 interface SortByAddedAtProps {
   value: string;
@@ -143,128 +109,29 @@ export function sortByAddedAt(a: SortByAddedAtProps, b: SortByAddedAtProps) {
   return dateA - dateB;
 }
 
-export function sortByDueDate(
-  a: Database["public"]["Tables"]["Tasks"]["Row"],
-  b: Database["public"]["Tables"]["Tasks"]["Row"],
-  ascending: boolean = true
+export function analyticsInterval(numIntervals: number) {
+  const allDates = eachDayOfInterval({
+    start: subDays(new Date(), numIntervals - 1),
+    end: new Date(),
+  });
+  return allDates;
+}
+
+export function workoutsForInterval(
+  workouts: WorkoutSupabase[],
+  numIntervals: number
 ) {
-  const timestampA = calculateTimestamp(a.due_date, a.end_time);
-  const timestampB = calculateTimestamp(b.due_date, b.end_time);
-
-  return ascending ? timestampA - timestampB : timestampB - timestampA;
-}
-
-function calculateTimestamp(date: string | null, time: string | null): number {
-  const combinedDateTime = date && time ? `${date}T${time}` : null;
-  return combinedDateTime ? parseISO(combinedDateTime).getTime() : 0;
-}
-
-export function sortByPriority(
-  a: Database["public"]["Tables"]["Tasks"]["Row"],
-  b: Database["public"]["Tables"]["Tasks"]["Row"],
-  settings?: Database["public"]["Tables"]["settings"]["Row"],
-  type?: boolean
-) {
-  if (settings?.primaryTaskOnTop) {
-    return comparePriority(a.priority, b.priority);
-  } else {
-    if (type) {
-      return comparePriority(a.priority, b.priority);
-    } else {
-      return comparePriority(b.priority, a.priority);
-    }
-  }
-}
-
-function comparePriority(
-  priorityA: boolean | null,
-  priorityB: boolean | null
-): number {
-  if (priorityA === null && priorityB === null) {
-    return 0;
-  } else if (priorityA === null) {
-    return 1;
-  } else if (priorityB === null) {
-    return -1;
-  } else {
-    return priorityA ? -1 : priorityB ? 1 : 0;
-  }
-}
-
-export function sortByProgress(
-  a: Database["public"]["Tables"]["Tasks"]["Row"],
-  b: Database["public"]["Tables"]["Tasks"]["Row"],
-  tasks: Database["public"]["Tables"]["Tasks"]["Row"][],
-  completedStatus: string = "completed",
-  descending: boolean = false
-): number {
-  const calculateProgress = (
-    task: Database["public"]["Tables"]["Tasks"]["Row"]
-  ): number => {
-    const numberOfTasks = tasks.filter((t) => t.category === task.category);
-    const completed = numberOfTasks.filter(
-      (item) => item.status === completedStatus
-    );
-    return (completed.length / numberOfTasks.length) * 100;
-  };
-
-  const progressA = calculateProgress(a);
-  const progressB = calculateProgress(b);
-
-  return (progressB - progressA) * (descending ? -1 : 1);
-}
-
-export function sortByCategory(
-  a: Database["public"]["Tables"]["Tasks"]["Row"],
-  b: Database["public"]["Tables"]["Tasks"]["Row"],
-  descending: boolean
-): number {
-  const categoryA = a.category || "";
-  const categoryB = b.category || "";
-
-  return descending
-    ? categoryB.localeCompare(categoryA)
-    : categoryA.localeCompare(categoryB);
-}
-
-export function analyticsInterval(numIntervals: number, type: string = "days") {
-  if (type === "month") {
-    const allMonths = eachMonthOfInterval({
-      start: subMonths(new Date(), numIntervals - 1),
-      end: new Date(),
-    });
-
-    return allMonths;
-  } else {
-    const allDates = eachDayOfInterval({
-      start: subDays(new Date(), numIntervals - 1),
-      end: new Date(),
-    });
-    return allDates;
-  }
-}
-
-export function completedTasksForInterval(
-  completedArray: string[] | null,
-  numIntervals: number,
-  type: string = "days"
-) {
-  const intervalStart =
-    type === "month"
-      ? subMonths(new Date(), numIntervals - 1)
-      : subDays(new Date(), numIntervals - 1);
-  const allIntervals =
-    type === "month"
-      ? eachMonthOfInterval({ start: intervalStart, end: new Date() })
-      : eachDayOfInterval({ start: intervalStart, end: new Date() });
+  const intervalStart = subDays(new Date(), numIntervals - 1);
+  const allIntervals = eachDayOfInterval({
+    start: intervalStart,
+    end: new Date(),
+  });
 
   const completedTasksPerInterval: number[] = allIntervals.map((interval) => {
-    const tasksCompletedInInterval = completedArray
-      ? completedArray.filter((completedDate) => {
-          const completedDateObj = new Date(completedDate);
-          return type === "month"
-            ? isSameMonth(completedDateObj, interval)
-            : isSameDay(completedDateObj, interval);
+    const tasksCompletedInInterval = workouts
+      ? workouts.filter((completedDate) => {
+          const completedDateObj = new Date(completedDate.end_time);
+          return isSameDay(completedDateObj, interval);
         })
       : [];
 
@@ -273,6 +140,33 @@ export function completedTasksForInterval(
 
   return completedTasksPerInterval;
 }
+
+export function workoutsForLast7Weeks(workouts: WorkoutSupabase[]) {
+  const last7WeeksStartDates = eachWeekOfInterval({
+    start: subWeeks(new Date(), 6),
+    end: new Date(),
+  });
+
+  const completedTasksPerWeek = last7WeeksStartDates.map((weekStartDate) => {
+    const weekEndDate = endOfWeek(weekStartDate);
+
+    const tasksCompletedInWeek = workouts
+      ? workouts.filter((workout) => {
+          const completedDateObj = new Date(workout.end_time);
+          return isSameWeek(completedDateObj, weekStartDate);
+        })
+      : [];
+
+    return {
+      workouts: tasksCompletedInWeek.length,
+      startDate: format(new Date(weekStartDate), "M"),
+      endDate: format(new Date(weekEndDate), "d"),
+    };
+  });
+
+  return completedTasksPerWeek;
+}
+
 export const getParamsArray = (param: string) => param.split(",");
 
 export function adjustMeasurement(
@@ -548,6 +442,7 @@ export function findBestRecordByProperty(
   records.forEach((record) => {
     const item = record[property];
     if (
+      item !== null &&
       typeof item === "object" &&
       "value" in item &&
       typeof item.value === "number" &&
@@ -559,4 +454,22 @@ export function findBestRecordByProperty(
   });
 
   return bestRecord;
+}
+
+export function countNonNullValues(
+  records: BestPerformaceRecordsType[]
+): number {
+  // Count non-null RM, VOLUME, and WEIGHT values for each record
+  const counts = records.map((record) => {
+    let count = 0;
+    if (record.RM !== null) count++;
+    if (record.volume !== null) count++;
+    if (record.weight !== null) count++;
+    return count;
+  });
+
+  // Sum up the counts
+  const totalCount = counts.reduce((total, count) => total + count, 0);
+
+  return totalCount;
 }

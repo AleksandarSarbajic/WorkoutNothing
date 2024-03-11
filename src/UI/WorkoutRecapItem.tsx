@@ -132,7 +132,8 @@ function WorkoutRecapItem({
           {adjusted.value} {adjusted.unit}
         </IconBox>
         <IconBox>
-          <FaTrophy />0 PRS
+          <FaTrophy />
+          {workout.records} PRS
         </IconBox>
       </IconsBox>
       <ExerciseHeading>

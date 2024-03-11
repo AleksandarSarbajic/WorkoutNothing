@@ -6,10 +6,10 @@ const AuthInput = styled.input`
   height: calc(5.6rem + 2px);
   padding: 1.6rem 0;
 
-  color: #161317;
+  color: var(--login-color);
   background-color: transparent;
   background-clip: padding-box;
-  border: 1px solid rgba(22, 19, 23, 0.3);
+  border: var(--login-border);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

@@ -9,7 +9,9 @@ import {
 import useRecordsExercise from "./useRecordsExercise";
 
 import Table from "../../UI/Table";
-import ExerciseRecordsRow from "../../UI/ExerciseRecordsRow";
+import ExerciseRecordsRow, {
+  maxWeightsForRepsProps,
+} from "../../UI/ExerciseRecordsRow";
 import { v4 as uuidv4 } from "uuid";
 import { ExerciseType, SetType } from "../../types/WorkoutTypes";
 import { useSettings } from "../settings/useSettings";
@@ -28,7 +30,7 @@ const StyledP = styled.p`
 function ExerciseRecords() {
   const { settings } = useSettings();
   const { user_exercise = [], isLoading } = useRecordsExercise();
-
+  console.log(user_exercise, "user_exercise");
   if (user_exercise.length === 0)
     return (
       <div>
@@ -64,16 +66,18 @@ function ExerciseRecords() {
     { oneRepMax: 0, set: [], exercise: null }
   );
 
-  const maxWeightsForReps = ONE_RM_PERCENTAGE.map((percentage, i) => {
-    const reps = i + 1;
+  const maxWeightsForReps: maxWeightsForRepsProps[] = ONE_RM_PERCENTAGE.map(
+    (percentage, i) => {
+      const reps = i + 1;
 
-    return {
-      reps,
-      maxWeight: Math.round(bestSetAndOneRepMax.oneRepMax * percentage) / 100,
-      exercise: bestSetAndOneRepMax.exercise,
-      id: uuidv4(),
-    };
-  });
+      return {
+        reps,
+        maxWeight: Math.round(bestSetAndOneRepMax.oneRepMax * percentage) / 100,
+        exercise: bestSetAndOneRepMax.exercise,
+        id: uuidv4(),
+      };
+    }
+  );
 
   const totalReps: number = user_exercise.reduce(
     (acc: number, exercise: ExerciseType) => {
@@ -102,6 +106,7 @@ function ExerciseRecords() {
     user_exercise[0].unit,
     settings
   );
+
   const adjutedMaxWeight = adjustMeasurement(
     Math.max(
       ...(Array.isArray(highestWeights) ? highestWeights : [highestWeights])
@@ -166,8 +171,13 @@ function ExerciseRecords() {
 
           <Table.Body
             isLoading={isLoading}
-            data={maxWeightsForReps}
-            render={(item) => <ExerciseRecordsRow item={item} key={item.id} />}
+            data={maxWeightsForReps as maxWeightsForRepsProps[]}
+            render={(item) => (
+              <ExerciseRecordsRow
+                item={item as maxWeightsForRepsProps}
+                key={item.id}
+              />
+            )}
           />
         </Table>
         <StyledP>

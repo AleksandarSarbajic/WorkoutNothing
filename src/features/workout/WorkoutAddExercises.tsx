@@ -37,7 +37,7 @@ function WorkoutAddExercises() {
         </Button>
         <ExercisesTableOperations />
       </Row>
-      <Row>
+      <Row style={{ margin: "3rem 0" }}>
         <Heading as="h1">Add Exercises</Heading>
       </Row>
       <Row>

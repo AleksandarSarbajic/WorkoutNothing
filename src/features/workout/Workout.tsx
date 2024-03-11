@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from "uuid";
 import Heading from "../../UI/Heading";
 import Menus from "../../context/Menus";
 import {
+  adjustMeasurement,
   convertSecondsToTime,
   findBestRecordByProperty,
   findBestSet,
@@ -135,7 +136,7 @@ const StyledAddCancel = styled.div`
   margin-top: 4rem;
   display: flex;
   flex-direction: column;
-  & button {
+  & > button {
     padding: 0.5rem 0;
     text-transform: uppercase;
     color: var(--color-red-700);
@@ -442,6 +443,7 @@ function Exercise({ exercise }: { exercise: ExerciseType }) {
         name={exercise.name}
         noteId={note.uniqueId}
         time={exercise.time}
+        id={exercise.id}
       />
       {note.isOpen && (
         <Note
@@ -479,7 +481,7 @@ function Start({ children }: { children: ReactNode }) {
   const { settings } = useSettings();
   const {
     dispatch,
-    time,
+    time: { reset },
     state: { status },
   } = useContext(WorkoutContext);
 
@@ -500,7 +502,7 @@ function Start({ children }: { children: ReactNode }) {
                   type: ActionTypes.START_WORKOUT,
                   payload: { unit: settings?.weight },
                 });
-                // time.start();
+                reset();
               }}
             />
           </Modal.Window>
@@ -512,7 +514,7 @@ function Start({ children }: { children: ReactNode }) {
               type: ActionTypes.START_WORKOUT,
               payload: { unit: settings?.weight },
             });
-            // time.start();
+            reset();
           }}
         >
           {children}
@@ -639,7 +641,7 @@ function Note({
 function AddCancel() {
   const {
     dispatch,
-    time: { reset, pause },
+    time: { pause },
   } = useContext(WorkoutContext);
   const [searchParams, setSearchParamas] = useSearchParams();
   return (
@@ -662,7 +664,6 @@ function AddCancel() {
           name={"cancel"}
           disabled={false}
           onConfirm={() => {
-            reset();
             pause();
             dispatch({ type: ActionTypes.RESTART_WORKOUT });
           }}
@@ -675,14 +676,15 @@ function AddCancel() {
 function ExerciseHeading({
   uniqueId,
   name,
-
   noteId,
   time,
+  id,
 }: {
   uniqueId: number | string;
   name: string;
   noteId: number | string;
   time: { value: number | null; isOpen: boolean; enable: boolean };
+  id: number;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -697,7 +699,7 @@ function ExerciseHeading({
       }}
     >
       <button
-        onClick={() => navigate(`/exercises/${uniqueId}?page=about`)}
+        onClick={() => navigate(`/exercises/${id}?page=about`)}
         style={{ fontSize: "2rem" }}
       >
         {name}
@@ -1024,10 +1026,13 @@ function Set({
 }) {
   const {
     dispatch,
-    state: { edit, template },
+    state: { edit, template, exercises },
   } = useContext(WorkoutContext);
   const isChecked = set.selected;
   const { timerHandler } = useTimerHandler();
+  const { settings } = useSettings();
+  const exercise = exercises.find((item) => item.uniqueId === uniqueId);
+  const previous = set.previous?.split(" x ");
 
   return (
     <StyledSet $columns="0.2fr 1fr 1fr 1fr 0.1fr" $checked={isChecked}>
@@ -1037,8 +1042,7 @@ function Set({
         style={{ opacity: "0.7" }}
         disabled={set.previous === null}
         onClick={() => {
-          if (set.previous === null) return;
-          const previous = set.previous?.split(" x ");
+          if (set.previous === null || !previous) return;
 
           dispatch({
             type: ActionTypes.UPDATE_PREVIOUS,
@@ -1051,7 +1055,16 @@ function Set({
           });
         }}
       >
-        {set.previous === null ? "-" : set.previous}
+        {set.previous === null || !previous
+          ? "-"
+          : Math.round(
+              +adjustMeasurement(+previous[0], exercise?.unit ?? "kg", settings)
+                .value
+            ) +
+            adjustMeasurement(+previous[0], exercise?.unit ?? "kg", settings)
+              .unit +
+            " x " +
+            set.reps}
       </button>
       <input
         id={`${set.uniqueId}-${set.id}-value-${set.set}`}
@@ -1119,6 +1132,10 @@ function Set({
 
 function Finish() {
   const { settings } = useSettings();
+  const audio = new Audio(
+    `https://zvwyaoedhsrbfwycadck.supabase.co/storage/v1/object/public/sounds/positive.mp3`
+  );
+
   const {
     insertWorkout,
     isError: isErrorWorkout,
@@ -1151,7 +1168,7 @@ function Finish() {
       id,
       templateId,
     },
-    time: { totalSeconds },
+    time: { totalSeconds, pause },
     dispatch,
   } = useContext(WorkoutContext);
 
@@ -1207,7 +1224,6 @@ function Finish() {
 
         const volume = findBestSet(exercise.sets);
         const weight = findBestWeightSet(exercise.sets);
-        console.log(recordOneRM, recordWeight, recordVolume);
 
         const recordToBeAdded = {
           weight:
@@ -1229,8 +1245,17 @@ function Finish() {
           id: uuidv4(),
           at: new Date().toISOString(),
           unit: settings?.weight || "kg",
+          current: true,
         };
-        console.log(recordToBeAdded, "recordToBeAdded");
+
+        if (
+          recordToBeAdded.RM === null &&
+          recordToBeAdded.volume === null &&
+          recordToBeAdded.weight === null
+        ) {
+          return exercise;
+        }
+
         return {
           ...exercise,
           records: [...exercise.records, recordToBeAdded],
@@ -1262,6 +1287,7 @@ function Finish() {
         }
       })
       .filter((item) => item !== null) as SuperSetType[],
+    records: 0,
   };
 
   return (
@@ -1303,10 +1329,10 @@ function Finish() {
 
             if (edit === false && template === false) {
               insertWorkout({ workout: modifiedState });
-
               insertExercises({
                 exercises: modifiedState.exercises,
               });
+
               if (templateId !== null && templateId !== undefined) {
                 updateTemplate({
                   workout: modifiedState,
@@ -1328,6 +1354,8 @@ function Finish() {
               !isPendingTemplate &&
               !isPendingUpdateTemplate
             ) {
+              audio.play();
+              pause();
               dispatch({ type: ActionTypes.RESTART_WORKOUT });
             }
           }}

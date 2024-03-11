@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ProviderItem from "./ProviderItem";
 import { FcGoogle } from "react-icons/fc";
-import { FaApple } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 
 const StyledProviderContainer = styled.div`
   display: flex;
@@ -19,8 +19,8 @@ function ProviderContainer() {
         provider="google"
       />
       <ProviderItem
-        text="Continue with Apple"
-        icon={<FaApple />}
+        text="Continue with Github"
+        icon={<FaGithub />}
         provider="github"
       />
     </StyledProviderContainer>

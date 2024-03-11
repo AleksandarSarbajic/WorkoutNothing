@@ -14,24 +14,26 @@ function WorkoutPage() {
   const { templates = [], isLoading } = useTemplates();
 
   return (
-    <>
-      <Row $type="horizontal">
-        <Heading as={"h1"}>Workout</Heading>
-        <Workout.Start>Start an empty workout</Workout.Start>
-      </Row>
-      <Row $type="horizontal" style={{ margin: "1rem 0 0 0" }}>
-        <Heading as={"h2"}>My Templates</Heading>
-        <button
-          onClick={() => {
-            dispatch({ type: "CREATE_TEMPLATE" });
-          }}
-        >
-          <HiOutlinePlus style={{ width: "2.6rem", height: "2.6rem" }} />
-        </button>
-      </Row>
-      <Row style={{ margin: "1rem 0" }}>
-        <Modal>
-          <Menus>
+    <Modal>
+      <Menus>
+        <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
+          <Row $type="horizontal">
+            <Heading as={"h1"}>Workout</Heading>
+            <Workout.Start>Start an empty workout</Workout.Start>
+          </Row>
+          {templates && templates.length !== 0 && (
+            <Row $type="horizontal" style={{ margin: "1rem 0 0 0" }}>
+              <Heading as={"h2"}>My Templates</Heading>
+              <button
+                onClick={() => {
+                  dispatch({ type: "CREATE_TEMPLATE" });
+                }}
+              >
+                <HiOutlinePlus style={{ width: "2.6rem", height: "2.6rem" }} />
+              </button>
+            </Row>
+          )}
+          <Row style={{ margin: "1rem 0" }}>
             <StyledWorkouts>
               {templates.map((template) => {
                 return (
@@ -44,28 +46,37 @@ function WorkoutPage() {
                 );
               })}
             </StyledWorkouts>
-          </Menus>
-        </Modal>
-      </Row>
-      <Row>
-        <Heading as={"h2"} style={{ margin: "1rem 0 2.4rem" }}>
-          Sample Templates
-        </Heading>
-        <Menus>
-          <StyledWorkouts>
-            {Templates.map((template) => {
-              return (
-                <TemplateItem
-                  key={template.id}
-                  workout={template}
-                  isLoading={isLoading}
-                />
-              );
-            })}
-          </StyledWorkouts>
-        </Menus>
-      </Row>
-    </>
+          </Row>
+          <Row $type="horizontal">
+            <Heading as={"h2"} style={{ margin: "1rem 0 2.4rem" }}>
+              Sample Templates
+            </Heading>
+            {templates && templates.length === 0 && (
+              <button
+                onClick={() => {
+                  dispatch({ type: "CREATE_TEMPLATE" });
+                }}
+              >
+                <HiOutlinePlus style={{ width: "2.6rem", height: "2.6rem" }} />
+              </button>
+            )}
+          </Row>
+          <Row>
+            <StyledWorkouts>
+              {Templates.map((template) => {
+                return (
+                  <TemplateItem
+                    key={template.id}
+                    workout={template}
+                    isLoading={isLoading}
+                  />
+                );
+              })}
+            </StyledWorkouts>
+          </Row>
+        </div>
+      </Menus>
+    </Modal>
   );
 }
 

@@ -2,8 +2,10 @@ import { useParams } from "react-router-dom";
 import useWorkouts from "../workout/useWorkouts";
 import { ExerciseType, WorkoutSupabase } from "../../types/WorkoutTypes";
 import { StyledWorkouts } from "../../pages/HistoryPage";
-import WorkoutRecapItem from "../../UI/WorkoutRecapItem";
 import Heading from "../../UI/Heading";
+import ExerciseRecapItem from "../../UI/ExerciseRecapItem";
+
+import Skeleton from "react-loading-skeleton";
 
 function ExercisesHistory() {
   const { exerciseId } = useParams();
@@ -15,7 +17,21 @@ function ExercisesHistory() {
       (exercise: ExerciseType) => exercise.id === +exerciseId!
     );
   });
-  if (history.length === 0)
+
+  if (isLoading)
+    return (
+      <Skeleton
+        count={30}
+        style={{
+          height: "17rem",
+          margin: "0.8rem 0",
+          borderRadius: "0.5rem",
+        }}
+        inline={true}
+      />
+    );
+
+  if (history && history.length === 0)
     return (
       <div>
         <Heading as={"h1"} style={{ textAlign: "center", marginTop: "10rem" }}>
@@ -28,10 +44,11 @@ function ExercisesHistory() {
     <div>
       <StyledWorkouts>
         {history?.map((workout: WorkoutSupabase) => (
-          <WorkoutRecapItem
+          <ExerciseRecapItem
             workout={workout}
             key={workout.id}
             isLoading={isLoading}
+            id={+exerciseId!}
           />
         ))}
       </StyledWorkouts>

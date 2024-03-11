@@ -6,6 +6,7 @@ import WorkoutRecapItem from "../UI/WorkoutRecapItem";
 import HistoryCalendar from "../UI/HistoryCalendar";
 import useWorkoutRange from "../features/workout/useWorkoutRange";
 import { WorkoutSupabase } from "../types/WorkoutTypes";
+import Spinner from "../UI/Spinner";
 
 const StyledBox = styled.div`
   margin-top: 5rem;
@@ -28,12 +29,37 @@ export const StyledWorkouts = styled.ul`
 
 function HistoryPage() {
   const { workouts, isLoading } = useWorkoutRange();
-  console.log(workouts);
+
+  const getMinMaxDates = () => {
+    if (!workouts || workouts.length === 0) {
+      return { latestDate: null, furthestDate: null };
+    }
+
+    let latestDate = new Date(workouts[0].end_time);
+    let furthestDate = new Date(workouts[0].end_time);
+
+    for (let i = 1; i < workouts.length; i++) {
+      const currentDate = new Date(workouts[i].end_time);
+      if (currentDate > latestDate) {
+        latestDate = currentDate;
+      }
+      if (currentDate < furthestDate) {
+        furthestDate = currentDate;
+      }
+    }
+
+    return { latestDate, furthestDate };
+  };
+
+  const { latestDate, furthestDate } = getMinMaxDates();
+
+  if (isLoading) return <Spinner />;
+
   return (
     <>
       <Row $type="horizontal">
         <Heading as="h1">History</Heading>
-        <HistoryCalendar />
+        <HistoryCalendar latestDate={latestDate} furthestDate={furthestDate} />
       </Row>
 
       <Row>

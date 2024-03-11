@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { TemplateTypes } from "./TemplateTypes";
+import { adjustMeasurement } from "../utils/helpers";
+import { Database } from "../services/supabase";
 
 export interface NoteType {
   id: string | number;
@@ -22,6 +24,7 @@ export interface BestPerformaceRecordsType {
   at: string;
   id: string;
   unit: string;
+  current?: boolean;
 }
 
 export interface ExerciseType {
@@ -60,6 +63,7 @@ export interface WorkoutSupabase {
   superSets: SuperSetType[];
   exercises: ExerciseType[];
   unit: string;
+  records: number;
 }
 
 export interface SuperSetType {
@@ -245,6 +249,7 @@ export function WORKOUT_REDUCER(
       return updateTime(state, action.payload);
     case ActionTypes.CREATE_SUPER_SET:
       return createSuperSet(state, action.payload);
+
     default:
       return state;
   }
@@ -273,7 +278,15 @@ function performWorkoutAgain(_: InitialStateType, payload: WorkoutSupabase) {
     exercises: exercises.map((exercise) => {
       return {
         ...exercise,
-        previousSets: exercise.sets,
+        sets: exercise.sets.map((set) => {
+          return { ...set, id: uuidv4() };
+        }),
+        previousSets: exercise.sets.map((set) => {
+          return {
+            ...set,
+            id: uuidv4(),
+          };
+        }),
       };
     }),
     name: name,
@@ -288,9 +301,14 @@ function performWorkoutAgain(_: InitialStateType, payload: WorkoutSupabase) {
 
 function startTemplate(
   _: InitialStateType,
-  payload: { item: TemplateTypes; unit: string }
+  payload: {
+    item: TemplateTypes;
+    unit: string;
+    settings: Database["public"]["Tables"]["settings"]["Row"];
+  }
 ) {
-  const { item, unit } = payload;
+  const { item, unit, settings } = payload;
+  console.log(payload);
   return {
     ...InitialState,
     exercises: item.exercises.map((exercise) => {
@@ -304,6 +322,13 @@ function startTemplate(
           isPinned: false,
           type: "exercise",
         },
+        sets: exercise.sets.map((set) => {
+          return {
+            ...set,
+            id: uuidv4(),
+            weight: +adjustMeasurement(set.weight ?? 0, unit, settings).value,
+          };
+        }),
         previousSets: exercise.sets,
         time: { value: 300, isOpen: false, enable: false },
         unit: unit,
@@ -498,11 +523,20 @@ function addSet(
 
   if (existingExercise && set.set !== null) {
     const existingSet = existingExercise?.previousSets[set?.set - 1] || null;
+    const allSetsAreNull = existingExercise.sets.every(
+      (item) => item.type === "warmup"
+    );
 
     if (existingSet) {
       const updateExercisesPrevious = state.exercises.map((exercise) => {
         if (exercise.uniqueId === exerciseId) {
-          return { ...exercise, sets: [...exercise.sets, existingSet] };
+          const existingSetChanged = {
+            ...existingSet,
+            set: allSetsAreNull ? 1 : existingSet.set,
+            id: uuidv4(),
+          };
+          console.log("1");
+          return { ...exercise, sets: [...exercise.sets, existingSetChanged] };
         }
         return exercise;
       });
@@ -510,6 +544,7 @@ function addSet(
     } else {
       const updatedExercises = state.exercises.map((exercise) => {
         if (exercise.uniqueId === exerciseId) {
+          console.log(2);
           return { ...exercise, sets: [...exercise.sets, set] };
         }
         return exercise;
@@ -600,6 +635,7 @@ function updateSet(
   payload: UpdateSetPayload
 ): InitialStateType {
   const { setId, exerciseId, type, weight, reps, select } = payload;
+  console.log(payload);
   const guardCloseItem = state.exercises.find(
     (item) => item.uniqueId === exerciseId
   );
@@ -644,7 +680,7 @@ function updateSet(
 
     return exercise;
   });
-
+  console.log(guard, type);
   if (
     (guard?.type === "straight" && type === "drop") ||
     (guard?.type === "straight" && type === "failure") ||
@@ -653,6 +689,7 @@ function updateSet(
     (guard?.type === "failure" && type === "straight") ||
     (guard?.type === "failure" && type === "drop") ||
     (guard?.type === "warmup" && type === "warmup") ||
+    (guard?.type === "straight" && type === "straight") ||
     type === undefined
   ) {
     return { ...state, exercises: updatedExercises as ExerciseType[] };
@@ -682,19 +719,44 @@ function updateSet(
                 : index + 1,
           };
         } else {
+          let nextNonNullItemIndex = null;
+          for (let i = curIndex + 1; i < exercise.sets.length; i++) {
+            if (exercise.sets[i].set !== null) {
+              nextNonNullItemIndex = i;
+              break;
+            }
+          }
+          let prevNonNullItemIndex = null;
+          for (let i = curIndex - 1; i >= 0; i--) {
+            if (exercise.sets[i].set !== null) {
+              prevNonNullItemIndex = i;
+              break;
+            }
+          }
+
+          const nextItem =
+            nextNonNullItemIndex !== null
+              ? exercise.sets[nextNonNullItemIndex]
+              : null;
+          const prevItem =
+            prevNonNullItemIndex !== null
+              ? exercise.sets[prevNonNullItemIndex]
+              : null;
+
           return {
             ...item,
-            set: allNulls
-              ? 1
-              : item.set === null
-              ? index + 1
-              : item.type === "warmup"
-              ? null
-              : curIndex > index
-              ? item.set
-              : curIndex < index && item.set !== null
-              ? item.set + 1
-              : index + 1,
+            set:
+              allNulls && curIndex === index
+                ? 1
+                : nextItem === null && prevItem !== null && curIndex === index
+                ? (prevItem?.set ?? 0) + 1
+                : curIndex === index
+                ? nextItem?.set
+                : item.set === null
+                ? null
+                : curIndex < index
+                ? item.set + 1
+                : item.set,
           };
         }
       });
@@ -963,6 +1025,7 @@ function updatePreviousSet(
             ...item,
             weight: weight,
             reps: reps,
+            id: uuidv4(),
           };
         }
         return item;

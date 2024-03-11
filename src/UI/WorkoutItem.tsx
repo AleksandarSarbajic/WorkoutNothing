@@ -20,7 +20,6 @@ import { useWorkout as useWorkoutContext } from "../features/workout/Workout";
 import useWorkout from "../features/workout/useWorkout";
 import Modal from "../context/Modal";
 import Confirm from "./Confirm";
-// import useWorkout from "../features/workout/useWorkout";
 
 const Button = styled.button`
   font-size: 2rem;
@@ -91,7 +90,7 @@ const StyledExercises = styled.ul`
   }
 `;
 const StyledExercise = styled.li`
-  ${Flex}
+  display: flex;
   justify-content: space-between;
 
   & > p:first-child {
@@ -101,12 +100,35 @@ const StyledExercise = styled.li`
     text-overflow: ellipsis;
   }
 `;
+const StyledRecordBox = styled.div`
+  margin-top: 1rem;
+  ${Flex};
+  gap: 1.4rem;
+`;
+const StyledExerciseSet = styled.div`
+  display: flex;
+  gap: 2rem;
+`;
+
+const StyledRecord = styled.div`
+  ${Flex}
+  border: 1px solid var(--color-grey-400);
+  border-radius: 3rem;
+
+  padding: 0.5rem 1.6rem;
+  font-size: 1.6rem;
+  gap: 2rem;
+  & svg {
+    width: 2rem;
+    height: 2rem;
+  }
+`;
 
 function WorkoutItem() {
   const {
     dispatch,
     state: { status },
-    time: { start },
+    time: { reset },
   } = useWorkoutContext();
   const { settings } = useSettings();
   const { workout, isLoading } = useWorkout();
@@ -141,9 +163,10 @@ function WorkoutItem() {
         };
       }),
     };
-    // console.log(itemForSending, "itemForSending");
+
     dispatch({ type: "PERFORM_AGAIN", payload: itemForSending });
-    start();
+
+    reset();
   }
 
   const totalWeightLifted = calculateTotalWeightLifted({
@@ -170,11 +193,44 @@ function WorkoutItem() {
           workout.unit,
           settings
         );
+
         return (
           <StyledExercise key={item.id}>
-            <div style={{ marginBottom: "1rem" }}>
-              <span style={{ marginRight: "2rem" }}>{item.set}</span>
-              {adjustedWeight.value} {adjustedWeight.unit} x {item.reps}
+            <div style={{ marginBottom: "2rem" }}>
+              <StyledExerciseSet>
+                <span>{item.set}</span>
+                <p>
+                  {adjustedWeight.value} {adjustedWeight.unit} x {item.reps}
+                </p>
+              </StyledExerciseSet>
+              {exercise.records.map((record) => {
+                if (
+                  (record.weight && record.weight.setId === item.id) ||
+                  (record.volume && record.volume.setId === item.id) ||
+                  (record.RM && record.RM.setId === item.id)
+                ) {
+                  return (
+                    <StyledRecordBox key={record.id}>
+                      {record.weight && record.weight.setId === item.id && (
+                        <StyledRecord>
+                          <FaTrophy /> <span>Weight</span>
+                        </StyledRecord>
+                      )}
+                      {record.volume && record.volume.setId === item.id && (
+                        <StyledRecord>
+                          <FaTrophy /> <span>Volume</span>
+                        </StyledRecord>
+                      )}
+                      {record.RM && record.RM.setId === item.id && (
+                        <StyledRecord>
+                          <FaTrophy /> <span>1 RM</span>
+                        </StyledRecord>
+                      )}
+                    </StyledRecordBox>
+                  );
+                }
+                return null;
+              })}
             </div>
             <div style={{ textAlign: "right" }}>
               {adjustedOneRM.value} {adjustedOneRM.unit}
@@ -208,7 +264,8 @@ function WorkoutItem() {
           {adjusted.value} {adjusted.unit}
         </IconBox>
         <IconBox>
-          <FaTrophy />0 PRS
+          <FaTrophy />
+          {workout.records} PRS
         </IconBox>
       </IconsBox>
 

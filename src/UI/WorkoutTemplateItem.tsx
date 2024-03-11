@@ -91,7 +91,7 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
   const {
     dispatch,
     state: { status },
-    time: { start },
+    time: { reset },
   } = useWorkout();
   const { user_exercises = [] } = useRecordsExercises();
 
@@ -106,27 +106,49 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
     const groupedExercises = groupExercises(filteredUserExercises);
 
     const closestExercises = findClosestExercises(groupedExercises);
+    // const itemForSending = {
+    //   ...item,
+    //   exercises: closestExercises.map((exercise) => {
+    //     const items = exercise.sets.map((set) => {
+    //       return {
+    //         ...set,
+    //         selected: false,
+    //       };
+    //     });
+    //     return {
+    //       ...exercise,
+    //       sets: items,
+    //     };
+    //   }),
+    // };
     const itemForSending = {
       ...item,
-      exercises: closestExercises.map((exercise) => {
-        const items = exercise.sets.map((set) => {
+      exercises: item.exercises.map((exercise) => {
+        const itemExercise = closestExercises.find(
+          (ex) => (ex.exercise_id ?? ex.id) === exercise.id
+        );
+
+        const items = exercise.sets.map((set, index) => {
           return {
             ...set,
             selected: false,
+            previous: itemExercise ? itemExercise.sets[index]?.previous : null,
           };
         });
+
         return {
           ...exercise,
           sets: items,
         };
       }),
     };
+
     dispatch({
       type: "START_TEMPLATE",
-      payload: { item: itemForSending, unit: settings?.weight },
+      payload: { item: itemForSending, unit: settings?.weight, settings },
     });
 
-    start();
+    reset();
   }
 
   return (

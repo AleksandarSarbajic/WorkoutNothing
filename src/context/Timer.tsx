@@ -14,6 +14,7 @@ import "react-circular-progressbar/dist/styles.css";
 import ReactDatePicker from "react-datepicker";
 import TimePicker from "../UI/TimePicker";
 import { useWorkout } from "../features/workout/Workout";
+import { useSettings } from "../features/settings/useSettings";
 
 const StyledClock = styled.button<{ $hasTime: boolean }>`
   background-color: var(--color-brand-700);
@@ -150,17 +151,27 @@ const TimerContext = createContext<{
   open: () => null,
 });
 function Timer({ children }: { children: ReactNode }) {
+  const { settings } = useSettings();
   const [expiryTimestamp, setExpiryTimestamp] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
   const [customTimerIsOpen, setCustomTimerIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(0);
   const [startingValue, setStartingValue] = useState(0);
 
+  const audio = new Audio(
+    `https://zvwyaoedhsrbfwycadck.supabase.co/storage/v1/object/public/sounds/${
+      settings?.sound ?? "boxingBell"
+    }.mp3`
+  );
+
   const openTimer = () => setCustomTimerIsOpen((cur) => !cur);
   const { seconds, minutes, restart, totalSeconds } = useTimer({
     expiryTimestamp,
     autoStart: false,
     onExpire: () => {
+      if (settings?.sound_effect) {
+        audio.play();
+      }
       setStartingValue(() => 0);
       setSelectedValue(0);
       setCustomTimerIsOpen((cur) => !cur);
@@ -247,7 +258,8 @@ function ModalItem() {
     open,
     isOpen,
   } = useContext(TimerContext);
-
+  const { settings } = useSettings();
+  console.log(settings);
   const initialStartDate = (() => {
     const date = new Date();
     date.setHours(5, 0, 0, 0);
@@ -338,11 +350,27 @@ function ModalItem() {
       </div>
       {customTimerIsOpen ? (
         <div>
-          <button onClick={() => timerHandler(totalSeconds - 30, true, -30)}>
-            -30 sec
+          <button
+            onClick={() =>
+              timerHandler(
+                totalSeconds - (settings?.timer_value ?? 0),
+                true,
+                -(settings?.timer_value ?? 0)
+              )
+            }
+          >
+            -{settings?.timer_value} sec
           </button>
-          <button onClick={() => timerHandler(totalSeconds + 30, true, 30)}>
-            +30 sec
+          <button
+            onClick={() =>
+              timerHandler(
+                totalSeconds + (settings?.timer_value ?? 0),
+                true,
+                settings?.timer_value ?? 0
+              )
+            }
+          >
+            +{settings?.timer_value} sec
           </button>
           <button onClick={() => timerHandler(0, true, 0)}>Skip</button>
         </div>
@@ -380,9 +408,10 @@ function TimerModal() {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function useTimerHandler() {
-  const { timerHandler } = useContext(TimerContext);
+  const { timerHandler, minutes, seconds, customTimerIsOpen } =
+    useContext(TimerContext);
 
-  return { timerHandler };
+  return { timerHandler, minutes, seconds, customTimerIsOpen };
 }
 
 Timer.Toggle = TimerToggle;

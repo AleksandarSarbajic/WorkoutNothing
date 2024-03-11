@@ -44,8 +44,11 @@ const GlobalStyles = createGlobalStyle`
 
   --bg-color:#efefef;
 
-  --workout-bg-color:rgba(31, 41, 55, 0.05);
---workout-hover-color:rgba(31, 41, 55, 0.1);
+  --workout-bg-color:rgba(31, 41, 55, 0.01);
+  --workout-hover-color:rgba(31, 41, 55, 0.05);
+
+  --login-color: #161317;
+  --login-border: 1px solid rgba(22, 19, 23, 0.3);
 
   }
   
@@ -90,6 +93,10 @@ const GlobalStyles = createGlobalStyle`
 
 --workout-bg-color:rgba(255, 255, 255, 0.05);
 --workout-hover-color:rgba(255, 255, 255, 0.1);
+
+--login-color: #fff;
+
+--login-border: 1px solid rgba(255, 255, 255, 0.3);
 
   }
   

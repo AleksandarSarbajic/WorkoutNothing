@@ -1,4 +1,4 @@
-import {
+import React, {
   Dispatch,
   ReactElement,
   SetStateAction,
@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import styled, { css, keyframes } from "styled-components";
-import { createPortal } from "react-dom";
+
 import { HiXMark } from "react-icons/hi2";
 
 interface ChildrenType {
@@ -104,19 +104,28 @@ const Button = styled.button`
 `;
 
 const ModalContext = createContext({} as ContextType);
-
-function Modal({ children }: ChildrenType) {
-  const [openName, setOpenName] = useState("");
-
-  const close = () => setOpenName("");
-  const open = setOpenName;
-
-  return (
-    <ModalContext.Provider value={{ openName, close, open }}>
-      {children}
-    </ModalContext.Provider>
-  );
+interface ModalComponent
+  extends React.ForwardRefExoticComponent<
+    ChildrenType & React.RefAttributes<HTMLDivElement>
+  > {
+  Open: typeof Open;
+  Window: typeof Window;
 }
+
+const Modal = React.forwardRef<HTMLDivElement, ChildrenType>(
+  ({ children }: ChildrenType, ref) => {
+    const [openName, setOpenName] = useState("");
+
+    const close = () => setOpenName("");
+    const open = setOpenName;
+
+    return (
+      <ModalContext.Provider value={{ openName, close, open }}>
+        <div ref={ref}>{children}</div>
+      </ModalContext.Provider>
+    );
+  }
+) as ModalComponent;
 
 function Open({ children, opens: opensWindowName, withOpens }: Opentype) {
   const { open } = useContext(ModalContext);
@@ -142,7 +151,7 @@ function Window({ children, name, padding = false, addition }: WindowType) {
   // console.log(disabled);
   if (name !== openName) return null;
 
-  return createPortal(
+  return (
     <Overlay>
       <StyledModal ref={ref} $padding={padding}>
         <Button
@@ -161,8 +170,7 @@ function Window({ children, name, padding = false, addition }: WindowType) {
           })}
         </div>
       </StyledModal>
-    </Overlay>,
-    document.body
+    </Overlay>
   );
 }
 

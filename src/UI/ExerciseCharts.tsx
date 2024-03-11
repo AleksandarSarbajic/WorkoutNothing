@@ -11,6 +11,7 @@ import {
 import styled from "styled-components";
 import { ExerciseType } from "../types/WorkoutTypes";
 import Heading from "./Heading";
+import Spinner from "./Spinner";
 
 const ChartsSection = styled.div`
   display: flex;
@@ -18,9 +19,9 @@ const ChartsSection = styled.div`
   gap: 4rem;
 `;
 
-function ExerciseCharts(): JSX.Element {
-  const { user_exercise = [] } = useRecordsExercise();
-  const { settings } = useSettings();
+function ExerciseCharts() {
+  const { user_exercise = [], isLoading } = useRecordsExercise();
+  const { settings, isLoading: isLoadingSettings } = useSettings();
 
   const calculateAdjustedValues = (
     data: ExerciseType[],
@@ -59,6 +60,8 @@ function ExerciseCharts(): JSX.Element {
   const exerciseDataRM = calculateAdjustedValues(user_exercise, "1RM");
   const exerciseDataVolume = calculateAdjustedValues(user_exercise, "Volume");
   const exerciseDataReps = calculateAdjustedValues(user_exercise, "Reps");
+
+  if (isLoading || isLoadingSettings) return <Spinner />;
 
   if (user_exercise.length === 0)
     return (

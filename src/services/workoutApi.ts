@@ -1,4 +1,5 @@
 import { ExerciseType, SuperSetType } from "../types/WorkoutTypes";
+import { countNonNullValues } from "../utils/helpers";
 import supabase from "./supabase";
 
 interface WorkoutProps {
@@ -11,11 +12,16 @@ interface WorkoutProps {
     superSets: SuperSetType[];
     exercises: ExerciseType[];
     unit: string;
+    records: number;
   };
   id?: number;
 }
 
 export async function insertWorkout({ workout }: WorkoutProps) {
+  const filteredRecords = workout.exercises.flatMap((exercise) =>
+    exercise.records.filter((record) => record.current)
+  );
+  const totalCount = countNonNullValues(filteredRecords);
   const item = {
     name: workout.name,
     note: workout.note,
@@ -23,10 +29,19 @@ export async function insertWorkout({ workout }: WorkoutProps) {
     start_time: workout.start_time,
     end_time: workout.end_time,
     superSets: workout.superSets,
-    exercises: workout.exercises,
+    exercises: workout.exercises.map((exercise) => {
+      const changedRecords = exercise.records.map((record) => {
+        return {
+          ...record,
+          current: false,
+        };
+      });
+      return { ...exercise, records: changedRecords };
+    }),
     unit: workout.unit,
+    records: totalCount,
   };
-
+  console.log(item);
   const { data, error } = await supabase
     .from("Workouts")
     .insert([{ ...item }])

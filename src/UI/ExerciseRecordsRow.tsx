@@ -8,8 +8,16 @@ const StyledBox = styled.div`
   text-align: center;
 `;
 
+export interface maxWeightsForRepsProps {
+  reps: number;
+  maxWeight: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  exercise: any;
+  id: string;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ExerciseRecordsRow({ item }: { item: any }) {
+function ExerciseRecordsRow({ item }: { item: maxWeightsForRepsProps }) {
   const { settings } = useSettings();
   const { reps, exercise, maxWeight } = item;
 

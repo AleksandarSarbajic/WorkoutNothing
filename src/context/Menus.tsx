@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
-import { createPortal } from "react-dom";
+import React, { createContext, useContext } from "react";
+
 import { HiEllipsisVertical } from "react-icons/hi2";
 import styled, { css } from "styled-components";
 import { useOutsideClick } from "../hooks/useOutsideClick";
@@ -103,21 +103,33 @@ const StyledButton = styled.button`
 
 const MenusContext = createContext({} as MenusProps);
 
-function Menus({ children }: ChildrenProps) {
-  const [openId, setOpenId] = useState<string | number>("");
-  const [position, setPosition] = useState<Position | null>(null);
-
-  const close = () => setOpenId("");
-  const open = setOpenId;
-
-  return (
-    <MenusContext.Provider
-      value={{ openId, close, open, position, setPosition }}
-    >
-      {children}
-    </MenusContext.Provider>
-  );
+interface MenusComponent
+  extends React.ForwardRefExoticComponent<
+    ChildrenProps & React.RefAttributes<HTMLDivElement>
+  > {
+  Menu: typeof Menu;
+  Toggle: typeof Toggle;
+  List: typeof List;
+  Button: typeof Button;
 }
+
+const Menus = React.forwardRef<HTMLDivElement, ChildrenProps>(
+  ({ children }: ChildrenProps, ref) => {
+    const [openId, setOpenId] = React.useState<string | number>("");
+    const [position, setPosition] = React.useState<Position | null>(null);
+
+    const close = () => setOpenId("");
+    const open = setOpenId;
+
+    return (
+      <MenusContext.Provider
+        value={{ openId, close, open, position, setPosition }}
+      >
+        <div ref={ref}>{children}</div>
+      </MenusContext.Provider>
+    );
+  }
+) as MenusComponent;
 
 function Toggle({ id, icon, text, direction = "left" }: IdProps) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
@@ -152,11 +164,10 @@ function List({ id, children }: IdProps) {
 
   if (openId !== id) return null;
 
-  return createPortal(
+  return (
     <StyledList $position={position} ref={ref}>
       {children}
-    </StyledList>,
-    document.body
+    </StyledList>
   );
 }
 
@@ -188,9 +199,13 @@ export function useCloseMenus(): CloseMenusHook {
 
   return { close };
 }
+
 Menus.Menu = Menu;
+
 Menus.Toggle = Toggle;
+
 Menus.List = List;
+
 Menus.Button = Button;
 
 export default Menus;

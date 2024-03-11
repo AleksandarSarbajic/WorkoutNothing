@@ -8,10 +8,12 @@ const Form = styled.form<FormProps>`
   ${(props) =>
     props.$type === "login" &&
     css`
-      max-width: 40.6rem;
+      max-width: 42.6rem;
       width: 100%;
-      padding: 5.6rem 2.4rem;
-      background-color: var(--color-grey-750);
+      padding: 5.6rem 3.6rem;
+      background-color: var(--color-grey-0);
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-grey-100);
     `}
 
   ${(props) =>
@@ -19,7 +21,6 @@ const Form = styled.form<FormProps>`
     css`
       padding: 2.4rem 4rem;
 
-      /* Box */
       background-color: var(--color-grey-0);
       border: 1px solid var(--color-grey-100);
       border-radius: var(--border-radius-md);

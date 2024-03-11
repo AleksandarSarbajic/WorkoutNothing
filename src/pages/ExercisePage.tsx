@@ -13,26 +13,32 @@ function ExercisePage() {
   const { exercise, isLoading } = useExercise();
   const moveBack = useMoveBack();
 
+  const options =
+    exercise?.instructions.length === 0
+      ? [
+          { value: "history", label: "History" },
+          { value: "charts", label: "Charts" },
+          { value: "records", label: "Records" },
+        ]
+      : [
+          { value: "about", label: "About" },
+          { value: "history", label: "History" },
+          { value: "charts", label: "Charts" },
+          { value: "records", label: "Records" },
+        ];
+
   return (
     <>
       <Row $type="horizontal">
         <ButtonText style={{ fontSize: "2rem" }} onClick={moveBack}>
           &larr; Back
         </ButtonText>
-        <div></div>
+        <div />
       </Row>
       <Row $type="horizontal">
         <Heading as="h1">{exercise?.name}</Heading>
         <TableOperations>
-          <PageFilter
-            filterField="page"
-            options={[
-              { value: "about", label: "About" },
-              { value: "history", label: "History" },
-              { value: "charts", label: "Charts" },
-              { value: "records", label: "Records" },
-            ]}
-          />
+          <PageFilter filterField="page" options={options} />
         </TableOperations>
       </Row>
       <Row>

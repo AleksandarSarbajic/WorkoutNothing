@@ -37,12 +37,13 @@ const createExercise = (name: string, id: number): TemplateExercise => ({
 const createTemplate = (
   name: string,
   exercises: TemplateExercise[],
-  last_performed: string
+  last_performed: string,
+  id: string
 ): TemplateTypes => ({
   name,
   exercises,
   last_performed,
-  id: uuidv4(),
+  id: id,
   type: "sample",
 });
 
@@ -57,7 +58,8 @@ const Templates: TemplateTypes[] = [
       createExercise("Preacher Curl", 169),
       createExercise("Hammer Curls", 5),
     ],
-    new Date().toISOString()
+    new Date().toISOString(),
+    "018e1e2e-eb53-77ca-aec2-511d1f3b325a"
   ),
   createTemplate(
     "Back and triceps",
@@ -70,7 +72,8 @@ const Templates: TemplateTypes[] = [
       createExercise("Triceps extension", 173),
       createExercise("EZ-Bar Skullcrusher", 142),
     ],
-    new Date().toISOString()
+    new Date().toISOString(),
+    "018e1e2e-eb53-78c2-a94d-ae497da06e03"
   ),
   createTemplate(
     "Legs",
@@ -81,7 +84,8 @@ const Templates: TemplateTypes[] = [
       createExercise("Thigh adductor", 60),
       createExercise("Standing Calf Raises", 71),
     ],
-    new Date().toISOString()
+    new Date().toISOString(),
+    "018e1e2e-eb53-7fd6-aa47-5b7c77b8458d"
   ),
 ];
 

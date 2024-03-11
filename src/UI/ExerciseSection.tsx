@@ -19,7 +19,7 @@ function ExerciseSection({
   if (exerciseParamas === "charts") return <ExerciseCharts />;
   if (exerciseParamas === "records") return <ExerciseRecords />;
 
-  return <div></div>;
+  return <div />;
 }
 
 export default ExerciseSection;

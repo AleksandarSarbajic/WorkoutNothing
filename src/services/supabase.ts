@@ -27,6 +27,7 @@ export type Database = {
           muscle: string;
           name: string;
           type: string;
+          user_id: string | null;
         };
         Insert: {
           created_at?: string;
@@ -37,6 +38,7 @@ export type Database = {
           muscle?: string;
           name?: string;
           type?: string;
+          user_id?: string | null;
         };
         Update: {
           created_at?: string;
@@ -47,8 +49,17 @@ export type Database = {
           muscle?: string;
           name?: string;
           type?: string;
+          user_id?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "public_exercises_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       measures: {
         Row: {
@@ -162,41 +173,52 @@ export type Database = {
           }
         ];
       };
-      templates: {
+      Templates: {
         Row: {
           created_at: string;
           exercises: Json[] | null;
-          id: string;
+          id: number;
           last_performed: string | null;
           name: string | null;
           note: string | null;
           superSets: Json[] | null;
           type: string | null;
           unit: string | null;
+          user_id: string | null;
         };
         Insert: {
           created_at?: string;
           exercises?: Json[] | null;
-          id: string;
+          id?: number;
           last_performed?: string | null;
           name?: string | null;
           note?: string | null;
           superSets?: Json[] | null;
           type?: string | null;
           unit?: string | null;
+          user_id?: string | null;
         };
         Update: {
           created_at?: string;
           exercises?: Json[] | null;
-          id?: string;
+          id?: number;
           last_performed?: string | null;
           name?: string | null;
           note?: string | null;
           superSets?: Json[] | null;
           type?: string | null;
           unit?: string | null;
+          user_id?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "public_Templates_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       user_exercises: {
         Row: {
@@ -205,6 +227,7 @@ export type Database = {
           id: number;
           name: string | null;
           note: Json | null;
+          records: Json[] | null;
           sets: Json[] | null;
           time: Json | null;
           uniqueId: string | null;
@@ -217,6 +240,7 @@ export type Database = {
           id?: number;
           name?: string | null;
           note?: Json | null;
+          records?: Json[] | null;
           sets?: Json[] | null;
           time?: Json | null;
           uniqueId?: string | null;
@@ -229,6 +253,7 @@ export type Database = {
           id?: number;
           name?: string | null;
           note?: Json | null;
+          records?: Json[] | null;
           sets?: Json[] | null;
           time?: Json | null;
           uniqueId?: string | null;
@@ -260,6 +285,7 @@ export type Database = {
           id: number;
           name: string | null;
           note: string | null;
+          records: number;
           start_time: string | null;
           superSets: Json[] | null;
           unit: string | null;
@@ -273,6 +299,7 @@ export type Database = {
           id?: number;
           name?: string | null;
           note?: string | null;
+          records?: number;
           start_time?: string | null;
           superSets?: Json[] | null;
           unit?: string | null;
@@ -286,6 +313,7 @@ export type Database = {
           id?: number;
           name?: string | null;
           note?: string | null;
+          records?: number;
           start_time?: string | null;
           superSets?: Json[] | null;
           unit?: string | null;

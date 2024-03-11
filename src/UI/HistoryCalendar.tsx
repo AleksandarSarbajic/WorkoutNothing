@@ -39,12 +39,18 @@ const DatePickerInput = forwardRef<HTMLButtonElement, PickerTypes>(
   }
 );
 
-function HistoryCalendar() {
+function HistoryCalendar({
+  latestDate,
+  furthestDate,
+}: {
+  latestDate: Date | null;
+  furthestDate: Date | null;
+}) {
   const [searchParams, setSearchParams] = useSearchParams();
   const { workouts = [] } = useWorkouts();
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(furthestDate || new Date());
+  const [endDate, setEndDate] = useState(latestDate || new Date());
   const onChange = (dates: [Date, Date]) => {
     const [start, end] = dates;
     setStartDate(start);

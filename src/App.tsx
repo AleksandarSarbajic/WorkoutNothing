@@ -20,12 +20,13 @@ import MeasuresPage from "./pages/MeasuresPage";
 import MeasurePage from "./pages/MeasurePage";
 import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
-import StopWatch from "./UI/Stopwatch";
+
 import WorkoutPage from "./pages/WorkoutPage";
 import HistoryPage from "./pages/HistoryPage";
 import HistoryWorkoutPage from "./pages/HistoryWorkoutPage";
 import WorkoutTemplatePage from "./pages/WorkoutTemplatePage";
 import CalculatorPage from "./pages/CalculatorPage";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,7 +52,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <StopWatch />,
+        element: <Dashboard />,
       },
       {
         path: "/history",

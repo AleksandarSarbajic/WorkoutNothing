@@ -10,21 +10,21 @@ const StyledProviderItem = styled.button`
   padding: 0.8rem 6.4rem;
   width: 100%;
 
-  color: #161317;
+  color: var(--login-color);
   text-align: center;
   text-decoration: none;
   cursor: pointer;
 
   user-select: none;
   background-color: transparent;
-  border: 1px solid #161317;
+  border: 1px solid var(--login-color);
   border-radius: 50rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
   &:hover {
-    background-color: #161317;
-    color: #fff;
+    background-color: var(--login-color);
+    color: var(--color-grey-50);
   }
 `;
 const StyledIconBox = styled.div`

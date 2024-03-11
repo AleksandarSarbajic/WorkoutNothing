@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useWorkout } from "../features/workout/Workout";
 import { formatTimeWorkout } from "../utils/helpers";
+import { useTimerHandler } from "../context/Timer";
 
 const StyledTimer = styled.button`
   padding: 2rem;
@@ -12,7 +13,7 @@ const StyledTimer = styled.button`
   @media only screen and (max-width: 50em) {
     position: absolute;
     width: 101%;
-    top: -8.5rem;
+    top: -11rem;
     border-radius: 0;
     z-index: 3;
     padding: 1.6rem;
@@ -30,7 +31,7 @@ const StyledTimer = styled.button`
 const StyledTime = styled.div`
   font-size: 2.4rem;
   @media only screen and (max-width: 50em) {
-    font-size: 1.6rem;
+    font-size: 2rem;
   }
 `;
 
@@ -40,6 +41,11 @@ function WorkoutTimer() {
     state: { name, template, edit },
     time: { hours, seconds, minutes },
   } = useWorkout();
+  const {
+    minutes: timerMinutes,
+    seconds: timerSeconds,
+    customTimerIsOpen,
+  } = useTimerHandler();
 
   return (
     <StyledTimer
@@ -61,8 +67,21 @@ function WorkoutTimer() {
         <StyledTime>
           {hours >= 1 && <span>{formatTimeWorkout(hours)}:</span>}
           <span>{formatTimeWorkout(minutes)}:</span>
-          <span>{formatTimeWorkout(seconds)}</span>
+          <span>{formatTimeWorkout(seconds)} </span>
         </StyledTime>
+      )}
+      {customTimerIsOpen && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div>Rest timer - &nbsp;</div>
+          <span> {formatTimeWorkout(timerMinutes)}:</span>
+          <span>{formatTimeWorkout(timerSeconds)}</span>
+        </div>
       )}
     </StyledTimer>
   );

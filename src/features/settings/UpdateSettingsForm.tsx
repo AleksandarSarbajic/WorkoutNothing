@@ -9,6 +9,7 @@ import { Database } from "../../services/supabase";
 import { useSettings } from "./useSettings";
 import { useUpdateSetting } from "./useUpdateSetting";
 import styled from "styled-components";
+import useWorkouts from "../workout/useWorkouts";
 
 const StyledLink = styled(Link)`
   font-size: 1.7rem;
@@ -24,6 +25,7 @@ function UpdateSettingsForm() {
     settings = {} as Database["public"]["Tables"]["settings"]["Row"],
   } = useSettings();
   const { updateSetting, isUpdating } = useUpdateSetting();
+  const { workouts, isLoading: isLoadingWorkouts } = useWorkouts();
 
   function handleUpdate(
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -38,7 +40,7 @@ function UpdateSettingsForm() {
     });
   }
 
-  if (isLoading) return <Spinner />;
+  if (isLoading || isLoadingWorkouts) return <Spinner />;
 
   return (
     <Form>
@@ -126,7 +128,25 @@ function UpdateSettingsForm() {
       <FormRow label="Sound Effect">
         <Select
           disabled={isUpdating}
-          value={`${settings?.sound_effect}` ?? undefined}
+          value={settings?.sound ?? "boxingBell"}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            handleUpdate(e, "sound")
+          }
+          options={[
+            { value: "boxingBell", label: "Boxing Bell" },
+            { value: "confirmation", label: "Confirmation" },
+            { value: "doorBell", label: "Door Bell" },
+            { value: "iphone", label: "Iphone" },
+            { value: "positive", label: "Positive" },
+            { value: "software", label: "Software" },
+            { value: "ting", label: "Ting" },
+          ]}
+        />
+      </FormRow>
+      <FormRow label="Enable Sound">
+        <Select
+          disabled={isUpdating}
+          value={`${settings?.sound_effect}` ?? "False"}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             handleUpdate(e, "sound_effect")
           }
@@ -134,15 +154,6 @@ function UpdateSettingsForm() {
             { value: "false", label: "False" },
             { value: "true", label: "True" },
           ]}
-        />
-      </FormRow>
-      <FormRow label="Sound">
-        <Select
-          disabled={isUpdating}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            handleUpdate(e, "sound")
-          }
-          options={[{ value: "monday", label: "Monday" }]}
         />
       </FormRow>
       <Heading as="h2" style={{ margin: "3rem 0 2rem" }}>
@@ -160,6 +171,9 @@ function UpdateSettingsForm() {
       <FormRow>
         <StyledLink to={"profile"}>Facebook</StyledLink>
       </FormRow>
+      {workouts?.length !== 0 && (
+        <FormRow>Workouts logged : {workouts?.length}</FormRow>
+      )}
     </Form>
   );
 }

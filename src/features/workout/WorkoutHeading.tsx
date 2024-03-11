@@ -8,7 +8,8 @@ const StyledRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  & div {
+  margin-bottom: 2.4rem;
+  & > div {
     display: flex;
     justify-content: space-between;
     align-items: center;

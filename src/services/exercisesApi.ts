@@ -50,6 +50,51 @@ export async function getExercise(
   return data as Database["public"]["Tables"]["exercises"]["Row"];
 }
 
+export async function insertExercise(exercise: {
+  name: string;
+  body: string;
+  category: string;
+}) {
+  const updatedExercise = {
+    name: exercise.name,
+    muscle: exercise.body,
+    equipment: exercise.category,
+    type: "strength",
+    difficulty: "beginner",
+  };
+
+  const { data, error } = await supabase
+    .from("exercises")
+    .insert([updatedExercise])
+    .select();
+
+  if (error) throw new Error("Exercise could not be added");
+
+  return data;
+}
+export async function updateExercise(exercise: {
+  name: string;
+  body: string;
+  category: string;
+  id: number;
+}) {
+  const updatedExercise = {
+    name: exercise.name,
+    muscle: exercise.body,
+    equipment: exercise.category,
+  };
+  console.log(exercise);
+  const { data, error } = await supabase
+    .from("exercises")
+    .update([updatedExercise])
+    .eq("id", exercise.id)
+    .select();
+
+  if (error) throw new Error("Exercise could not be added");
+
+  return data;
+}
+
 export async function insertExercises({
   exercises,
 }: {

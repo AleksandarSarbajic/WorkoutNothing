@@ -1,10 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
-const StyledFormRow = styled.div`
+const StyledFormRow = styled.div<{ $grid?: string }>`
   display: grid;
   align-items: center;
   grid-template-columns: 24rem 1fr 1.2fr;
+
+  ${(props) => props.$grid && `grid-template-columns: ${props.$grid};`}
+
   gap: 2.4rem;
 
   padding: 1.2rem 0;
@@ -41,13 +44,15 @@ function FormRow({
   label,
   error,
   children,
+  style,
 }: {
   label?: string;
   error?: string;
   children: React.ReactNode;
+  style?: string;
 }) {
   return (
-    <StyledFormRow>
+    <StyledFormRow $grid={style}>
       {label && React.isValidElement(children) && (
         <Label htmlFor={children.props.id}>{label}</Label>
       )}

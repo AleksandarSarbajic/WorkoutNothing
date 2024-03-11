@@ -15,7 +15,7 @@ function useDeleteTemplate(id?: number) {
     mutationFn: () => deleteTemplateApi(workoutId ? +workoutId! : +id!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["templates"] });
-      navigate(-1);
+      navigate("/workout");
     },
   });
 

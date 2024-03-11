@@ -4,6 +4,7 @@ import { Database } from "../services/supabase";
 import Skeleton from "react-loading-skeleton";
 import { Measure } from "../types/MeasureTableTypes";
 import { BestPerformaceType, ExerciseType } from "../types/WorkoutTypes";
+import { maxWeightsForRepsProps } from "./ExerciseRecordsRow";
 
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -147,18 +148,22 @@ function Body({
         repetitions: number;
         weight: number;
         unit: string;
-      }[];
+        id?: number;
+      }[]
+    | maxWeightsForRepsProps[];
   render: (
     item:
       | Database["public"]["Tables"]["exercises"]["Row"]
       | ExerciseType
       | BestPerformaceType
       | Measure
+      | maxWeightsForRepsProps
       | {
           percentage: number;
           repetitions: number;
           weight: number;
           unit: string;
+          id?: number;
         },
     i: number
   ) => ReactElement;

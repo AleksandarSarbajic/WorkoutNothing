@@ -25,8 +25,9 @@ import {
   ExerciseType,
   SetType,
 } from "../../types/WorkoutTypes";
-import useRecordsExerciseRow from "./useRecordsExerciseRow";
-import SpinnerMini from "../../UI/SpinnerMini";
+
+import AddExerciseForm from "../../UI/AddExerciseForm";
+import { adjustMeasurement } from "../../utils/helpers";
 
 const Exercise = styled.div`
   font-size: 1.6rem;
@@ -48,14 +49,16 @@ const Checked = styled.div`
 function ExerciseRow({
   exercise,
   type,
+  user_exercises,
 }: {
   exercise:
     | Database["public"]["Tables"]["exercises"]["Row"]
     | ExerciseType
     | BestPerformaceType
     | Measure;
-
   type?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  user_exercises: any[] | undefined;
 }) {
   const { settings } = useSettings();
   const navigate = useNavigate();
@@ -69,9 +72,13 @@ function ExerciseRow({
     equipment,
     muscle,
     difficulty,
+    instructions,
+    user_id,
   } = exercise as Database["public"]["Tables"]["exercises"]["Row"];
-  const { user_exercise, isLoading } = useRecordsExerciseRow(+exercise.id);
-  // console.log(user_exercise, isLoading);
+
+  const user_exercise = user_exercises?.filter(
+    (item) => item.exercise_id === +exercise.id
+  );
   const [searchParams] = useSearchParams();
   const exerciseParams = searchParams.get("exerciseId");
   const isSelected = selectedExercises.some(
@@ -79,7 +86,6 @@ function ExerciseRow({
   );
 
   function onSelectHandler() {
-    if (isLoading) return;
     if (type !== "add") return;
     const exerciseTemplate = {
       id: exerciseId,
@@ -89,9 +95,9 @@ function ExerciseRow({
       sets: [
         {
           set: 1,
-          reps: 5,
-          previous: "10kg x 5",
-          weight: 10,
+          reps: null,
+          previous: null,
+          weight: null,
           id: uuidv4(),
           type: "straight",
           selected: false,
@@ -101,7 +107,7 @@ function ExerciseRow({
       note: {
         id: exerciseId,
         uniqueId: uuidv4(),
-        value: "",
+        value: null,
         isOpen: false,
         isPinned: false,
         type: "exercise",
@@ -121,6 +127,7 @@ function ExerciseRow({
       return {
         ...set,
         selected: false,
+        id: uuidv4(),
       };
     });
 
@@ -130,8 +137,28 @@ function ExerciseRow({
       exercise_id: itemForExtracting.exercise_id,
       name: itemForExtracting.name,
       unit: itemForExtracting.unit,
-      sets: [sets[0]],
-      previousSets: sets,
+      sets: [
+        {
+          ...sets[0],
+          id: uuidv4(),
+          weight: Math.round(
+            +adjustMeasurement(sets[0].weight, itemForExtracting.unit, settings)
+              .value
+          ),
+        },
+      ],
+      previousSets: sets.map((set: SetType) => {
+        return {
+          ...set,
+          weight: Math.round(
+            +adjustMeasurement(
+              set.weight ?? 0,
+              itemForExtracting.unit,
+              settings
+            ).value
+          ),
+        };
+      }),
       note: itemForExtracting.note,
       time: itemForExtracting.time,
       records: itemForExtracting.records,
@@ -154,7 +181,7 @@ function ExerciseRow({
     >
       <>
         <Exercise>{name}</Exercise>
-        <div>{muscle}</div>
+        <div>{muscle.replace(/_/g, " ")}</div>
         <div>{equipment.replace(/_/g, " ")}</div>
         <div>{difficulty}</div>
         {type !== "add" && (
@@ -164,12 +191,20 @@ function ExerciseRow({
                 <Menus.Toggle id={exerciseId} />
 
                 <Menus.List id={exerciseId}>
-                  <Menus.Button icon={<HiPencil />}>
-                    <p>Edit exercise</p>
-                  </Menus.Button>
+                  {user_id !== null && (
+                    <Menus.Button icon={<HiPencil />}>
+                      <Modal.Open opens="edit-exercise">
+                        <p>Edit exercise</p>
+                      </Modal.Open>
+                    </Menus.Button>
+                  )}
                   <Menus.Button
                     icon={<HiInformationCircle />}
-                    onClick={() => navigate(`${exerciseId}?page=about`)}
+                    onClick={() => {
+                      if (instructions.length === 0)
+                        navigate(`${exerciseId}?page=history`);
+                      else navigate(`${exerciseId}?page=about`);
+                    }}
                   >
                     <p>About</p>
                   </Menus.Button>
@@ -193,6 +228,15 @@ function ExerciseRow({
                   </Menus.Button>
                 </Menus.List>
               </Menus.Menu>
+              <Modal.Window name="edit-exercise">
+                <AddExerciseForm
+                  edit={true}
+                  name={name}
+                  category={muscle}
+                  bodyPart={equipment}
+                  exerciseId={exerciseId}
+                />
+              </Modal.Window>
             </Modal>
           </div>
         )}
@@ -204,7 +248,7 @@ function ExerciseRow({
             <p>
               {user_exercise?.length === 0 && null}
 
-              {isLoading && <SpinnerMini />}
+              {/* {isLoading && <SpinnerMini />} */}
               {user_exercise &&
                 user_exercise.length !== 0 &&
                 user_exercise.length}
