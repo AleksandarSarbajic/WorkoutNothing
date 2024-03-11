@@ -12,7 +12,6 @@ const StyledHeader = styled.header`
   justify-content: flex-end;
   @media only screen and (max-width: 37.5em) {
     padding: 1.2rem 3.6rem;
-    justify-content: space-between;
   }
 `;
 
