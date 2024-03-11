@@ -9,9 +9,10 @@ import {
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./UI/ProtectedRoute";
 import AppLayout from "./UI/AppLayout";
-import { lazy } from "react";
+import { Suspense, lazy } from "react";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import { SkeletonTheme } from "react-loading-skeleton";
+import Spinner from "./UI/Spinner";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignUpPage = lazy(() => import("./pages/SignUpPage"));
@@ -127,36 +128,38 @@ function App() {
     <>
       <DarkModeProvider>
         <GlobalStyles />
-        <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <SkeletonTheme
-            baseColor="var(--color-grey-200)"
-            highlightColor="var(--color-grey-300)"
-          >
-            <RouterProvider router={router} />
-          </SkeletonTheme>
-          <Toaster
-            position="top-center"
-            gutter={12}
-            containerStyle={{ margin: "8px" }}
-            toastOptions={{
-              success: {
-                duration: 3000,
-              },
-              error: {
-                duration: 5000,
-              },
-              style: {
-                fontFamily: "NotoSans, sans-serif",
-                fontSize: "16px",
-                maxWidth: "500px",
-                padding: "16px 24px",
-                backgroundColor: "var(--color-black-100)",
-                color: "#c1c2c3",
-              },
-            }}
-          />
-        </QueryClientProvider>
+        <Suspense fallback={<Spinner />}>
+          <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <SkeletonTheme
+              baseColor="var(--color-grey-200)"
+              highlightColor="var(--color-grey-300)"
+            >
+              <RouterProvider router={router} />
+            </SkeletonTheme>
+            <Toaster
+              position="top-center"
+              gutter={12}
+              containerStyle={{ margin: "8px" }}
+              toastOptions={{
+                success: {
+                  duration: 3000,
+                },
+                error: {
+                  duration: 5000,
+                },
+                style: {
+                  fontFamily: "NotoSans, sans-serif",
+                  fontSize: "16px",
+                  maxWidth: "500px",
+                  padding: "16px 24px",
+                  backgroundColor: "var(--color-black-100)",
+                  color: "#c1c2c3",
+                },
+              }}
+            />
+          </QueryClientProvider>
+        </Suspense>
       </DarkModeProvider>
     </>
   );
