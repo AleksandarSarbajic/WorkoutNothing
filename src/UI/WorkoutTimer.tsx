@@ -13,7 +13,7 @@ const StyledTimer = styled.button`
   @media only screen and (max-width: 50em) {
     position: absolute;
     width: 101%;
-    top: -11rem;
+    top: -9rem;
     border-radius: 0;
     z-index: 3;
     padding: 1.6rem;

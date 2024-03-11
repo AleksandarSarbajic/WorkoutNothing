@@ -15,7 +15,7 @@ const StyledAppLayout = styled.div`
   max-height: 100vh;
   @media only screen and (max-width: 50em) {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr 12rem;
+    grid-template-rows: auto 1fr;
   }
 `;
 

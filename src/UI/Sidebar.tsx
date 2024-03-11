@@ -15,11 +15,15 @@ const StyledSidebar = styled.aside`
   flex-direction: column;
   gap: 3.2rem;
   @media only screen and (max-width: 50em) {
-    grid-column: 1 / 3;
-    grid-row: 3 / 4;
+    position: fixed;
+    bottom: 0;
+    right: 50%;
+    transform: translateX(50%);
+    width: 100%;
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
+    z-index: 99999999999999999;
   }
   @media only screen and (max-width: 45.625em) {
     padding: 3rem 1.2rem 1.2rem 1.2rem;
