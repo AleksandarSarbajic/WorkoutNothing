@@ -7,7 +7,7 @@ interface PickerTypes {
 }
 
 const StyledInput = styled.button`
-  font-size: 2.4rem;
+  font-size: 3rem;
   padding: 0 0.5rem;
 
   width: 100%;

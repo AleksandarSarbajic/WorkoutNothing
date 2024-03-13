@@ -1,7 +1,6 @@
 import styled, { css } from "styled-components";
 import Heading from "./Heading";
 
-import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { TemplateExercise, TemplateTypes } from "../types/TemplateTypes";
 import { useWorkout } from "../features/workout/Workout";
@@ -11,6 +10,7 @@ import useRecordsExercises from "../features/exercises/useRecordsExercises";
 import { findClosestExercises, groupExercises } from "../utils/helpers";
 import Modal from "../context/Modal";
 import Confirm from "./Confirm";
+import { useTimerHandler } from "../context/Timer";
 
 const Button = styled.button`
   font-size: 2rem;
@@ -94,6 +94,7 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
     time: { reset },
   } = useWorkout();
   const { user_exercises = [] } = useRecordsExercises();
+  const { handleRestart } = useTimerHandler();
 
   const navigate = useNavigate();
 
@@ -106,21 +107,7 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
     const groupedExercises = groupExercises(filteredUserExercises);
 
     const closestExercises = findClosestExercises(groupedExercises);
-    // const itemForSending = {
-    //   ...item,
-    //   exercises: closestExercises.map((exercise) => {
-    //     const items = exercise.sets.map((set) => {
-    //       return {
-    //         ...set,
-    //         selected: false,
-    //       };
-    //     });
-    //     return {
-    //       ...exercise,
-    //       sets: items,
-    //     };
-    //   }),
-    // };
+
     const itemForSending = {
       ...item,
       exercises: item.exercises.map((exercise) => {
@@ -156,9 +143,6 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
       <Heading as="h1" style={{ marginBottom: "1rem" }}>
         {item?.name}
       </Heading>
-      <p style={{ opacity: "0.7", fontSize: "1.8rem" }}>
-        Last performed: {format(new Date(), "MMM d, yyyy")}
-      </p>
 
       <StyledExercises>
         {item?.exercises?.map((exercise: TemplateExercise) => (
@@ -191,6 +175,7 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
                 confirmText="Start a new one"
                 onConfirm={() => {
                   handleStartFromTemplate();
+                  handleRestart();
                 }}
               />
             </Modal.Window>
@@ -199,6 +184,7 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
           <Button
             onClick={() => {
               handleStartFromTemplate();
+              handleRestart();
             }}
           >
             Start Workout

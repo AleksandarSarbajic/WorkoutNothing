@@ -20,6 +20,7 @@ import { useWorkout as useWorkoutContext } from "../features/workout/Workout";
 import useWorkout from "../features/workout/useWorkout";
 import Modal from "../context/Modal";
 import Confirm from "./Confirm";
+import { useTimerHandler } from "../context/Timer";
 
 const Button = styled.button`
   font-size: 2rem;
@@ -132,6 +133,8 @@ function WorkoutItem() {
   } = useWorkoutContext();
   const { settings } = useSettings();
   const { workout, isLoading } = useWorkout();
+  const { handleRestart } = useTimerHandler();
+
   const workoutType = workout as WorkoutSupabase;
 
   if (isLoading)
@@ -302,6 +305,7 @@ function WorkoutItem() {
                 confirmText="Start a new one"
                 onConfirm={() => {
                   performAgainHandler();
+                  handleRestart();
                 }}
               />
             </Modal.Window>
@@ -310,6 +314,7 @@ function WorkoutItem() {
           <Button
             onClick={() => {
               performAgainHandler();
+              handleRestart();
             }}
           >
             Perform Again

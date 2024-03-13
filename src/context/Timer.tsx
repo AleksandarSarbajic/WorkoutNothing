@@ -127,6 +127,7 @@ const TimerContext = createContext<{
   startingValue: number;
   isOpen: boolean;
   restart: (newExpiryTimestamp: Date) => void;
+  handleRestart: () => void;
   timerHandler: (
     value: number,
     incrementDecrement: boolean,
@@ -149,9 +150,11 @@ const TimerContext = createContext<{
   customTimerIsOpen: false,
   openTimer: () => null,
   open: () => null,
+  handleRestart: () => null,
 });
 function Timer({ children }: { children: ReactNode }) {
   const { settings } = useSettings();
+  const [isRestart, setIsRestart] = useState(false);
   const [expiryTimestamp, setExpiryTimestamp] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
   const [customTimerIsOpen, setCustomTimerIsOpen] = useState(false);
@@ -169,14 +172,17 @@ function Timer({ children }: { children: ReactNode }) {
     expiryTimestamp,
     autoStart: false,
     onExpire: () => {
-      if (settings?.sound_effect) {
+      if (!isRestart && settings?.sound_effect) {
         audio.play();
       }
+      setIsRestart(false);
       setStartingValue(() => 0);
       setSelectedValue(0);
       setCustomTimerIsOpen((cur) => !cur);
     },
   });
+
+  // Function to restart the timer
 
   const open = () => setIsOpen((cur) => !cur);
 
@@ -209,6 +215,11 @@ function Timer({ children }: { children: ReactNode }) {
 
     restart(time);
   }
+  const handleRestart = () => {
+    setIsRestart(true);
+
+    timerHandler(0, true, 0);
+  };
 
   return (
     <TimerContext.Provider
@@ -221,9 +232,10 @@ function Timer({ children }: { children: ReactNode }) {
         totalSeconds,
         selectedValue,
         startingValue,
-        restart,
         isOpen,
         open,
+        restart,
+        handleRestart,
       }}
     >
       {children}
@@ -267,8 +279,7 @@ function ModalItem() {
   })();
 
   const [startDate, setStartDate] = useState(initialStartDate);
-
-  // Function to convert hours to minutes and minutes to seconds
+  console.log(startDate);
   const convertTime = (time: Date) => {
     const totalMinutes = time.getHours() * 60;
     const totalSeconds = totalMinutes + time.getMinutes();
@@ -335,7 +346,7 @@ function ModalItem() {
                       showTimeSelectOnly
                       timeIntervals={5}
                       timeCaption="Time"
-                      dateFormat="h:mm"
+                      dateFormat="HH:mm"
                       timeFormat="HH:mm"
                       minTime={new Date(0, 0, 0, 0, 0, 0)}
                       maxTime={new Date(0, 0, 0, 10, 0, 0)}
@@ -408,10 +419,10 @@ function TimerModal() {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function useTimerHandler() {
-  const { timerHandler, minutes, seconds, customTimerIsOpen } =
+  const { timerHandler, minutes, seconds, customTimerIsOpen, handleRestart } =
     useContext(TimerContext);
 
-  return { timerHandler, minutes, seconds, customTimerIsOpen };
+  return { timerHandler, minutes, seconds, customTimerIsOpen, handleRestart };
 }
 
 Timer.Toggle = TimerToggle;

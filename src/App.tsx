@@ -14,10 +14,10 @@ import { DarkModeProvider } from "./context/DarkModeContext";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import SpinnerFullPage from "./UI/SpinnerFullPage";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+import PageNotFound from "./pages/PageNotFount";
 
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const SignUpPage = lazy(() => import("./pages/SignUpPage"));
-const PageNotFound = lazy(() => import("./pages/PageNotFount"));
 const ExercisesPage = lazy(() => import("./pages/ExercisesPage"));
 const ExercisePage = lazy(() => import("./pages/ExercisePage"));
 

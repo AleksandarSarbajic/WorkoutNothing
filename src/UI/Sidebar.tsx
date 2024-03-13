@@ -23,7 +23,7 @@ const StyledSidebar = styled.aside`
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
-    z-index: 99999999999999999;
+    z-index: 5;
   }
   @media only screen and (max-width: 45.625em) {
     padding: 3rem 1.2rem 1.2rem 1.2rem;

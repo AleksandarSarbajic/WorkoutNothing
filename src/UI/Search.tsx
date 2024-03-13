@@ -37,7 +37,7 @@ const StyledButton = styled.button<SearchProps>`
   top: 0.7rem;
   left: 1rem;
 
-  z-index: 3;
+  z-index: 5;
   width: 2.4rem;
   height: 2.4rem;
   & svg {

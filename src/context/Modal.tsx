@@ -142,17 +142,18 @@ function Open({ children, opens: opensWindowName, withOpens }: Opentype) {
 
 function Window({ children, name, padding = false, addition }: WindowType) {
   const { openName, close } = useContext(ModalContext);
-  const ref = useOutsideClick<HTMLDivElement>(() => {
+  function handler() {
     if (addition) {
       addition();
     }
     close();
-  });
+  }
+  const ref = useOutsideClick<HTMLDivElement>(handler, true, [], handler);
 
   if (name !== openName) return null;
 
   return (
-    <Overlay>
+    <Overlay id="overlay">
       <StyledModal ref={ref} $padding={padding}>
         <Button
           onClick={() => {

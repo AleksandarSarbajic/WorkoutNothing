@@ -21,12 +21,25 @@ const StyledButton = styled.button`
   right: 7%;
   padding: 2rem;
   animation: ${animation} 0.3s ease-in-out;
+  z-index: 6;
+
   svg {
     width: 3rem;
     height: 3rem;
   }
+
   &:hover {
     background-color: var(--color-brand-700);
+  }
+
+  @media only screen and (max-width: 50em) {
+    bottom: 12%;
+    right: 8%;
+    padding: 2.4rem;
+    svg {
+      width: 3.6rem;
+      height: 3.6rem;
+    }
   }
 `;
 

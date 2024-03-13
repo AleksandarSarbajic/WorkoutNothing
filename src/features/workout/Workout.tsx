@@ -63,6 +63,7 @@ const StyledButton = css`
   padding: 1rem 2rem;
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);
+  color: var(--color-brand-50);
   &:hover {
     background-color: var(--color-brand-600);
   }
@@ -485,6 +486,8 @@ function Start({ children }: { children: ReactNode }) {
     state: { status },
   } = useContext(WorkoutContext);
 
+  const { handleRestart } = useTimerHandler();
+
   return (
     <Modal>
       {status !== "idle" ? (
@@ -503,6 +506,7 @@ function Start({ children }: { children: ReactNode }) {
                   payload: { unit: settings?.weight },
                 });
                 reset();
+                handleRestart();
               }}
             />
           </Modal.Window>
@@ -515,6 +519,7 @@ function Start({ children }: { children: ReactNode }) {
               payload: { unit: settings?.weight },
             });
             reset();
+            handleRestart();
           }}
         >
           {children}
@@ -603,7 +608,7 @@ function Note({
   } = useContext(WorkoutContext);
   const noteValue = exercises.find((exercise) => exercise.note.uniqueId === id)
     ?.note.value;
- 
+
   return (
     <StyledNote $pinned={isPinned}>
       <input
@@ -857,14 +862,16 @@ function RestTimer({
   time: { value: number | null; isOpen: boolean; enable: boolean };
 }) {
   const { dispatch } = useContext(WorkoutContext);
+  console.log(time);
   const initialStartDate = (() => {
     const date = new Date();
-    date.setHours(5, 0, 0, 0);
+    const timerValue = (time.value ?? 300) / 60;
+    date.setHours(timerValue, 0, 0, 0);
     return date;
   })();
-
+  console.log(initialStartDate);
   const [startDate, setStartDate] = useState(initialStartDate);
-
+  console.log(startDate);
   const convertTime = (time: Date) => {
     const totalMinutes = time.getHours() * 60;
     const totalSeconds = totalMinutes + time.getMinutes();
@@ -913,7 +920,7 @@ function RestTimer({
           showTimeSelectOnly
           timeIntervals={5}
           timeCaption="Time"
-          dateFormat="h:mm"
+          dateFormat="HH:mm"
           timeFormat="HH:mm"
           minTime={new Date(0, 0, 0, 0, 0, 0)}
           maxTime={new Date(0, 0, 0, 10, 0, 0)}

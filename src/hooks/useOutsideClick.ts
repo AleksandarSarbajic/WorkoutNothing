@@ -3,12 +3,13 @@ import { useEffect, useRef, RefObject } from "react";
 export function useOutsideClick<T extends HTMLElement>(
   handler: () => void,
   listenCapturing = true,
-  additionalRefs: RefObject<HTMLElement>[] = []
+  additionalRefs: RefObject<HTMLElement>[] = [],
+  additionalHandler?: () => void
 ): RefObject<T> {
   const ref = useRef<T>(null);
 
   useEffect(() => {
-    function useClickHandler(e: Event) {
+    function useClickHandler(e: MouseEvent) {
       if (
         ref.current &&
         !ref.current.contains(e.target as Node) &&
@@ -16,7 +17,11 @@ export function useOutsideClick<T extends HTMLElement>(
           (ref) => ref.current && ref.current.contains(e.target as Node)
         )
       ) {
-        handler();
+        if ((e.target as HTMLElement).id !== "overlay") {
+          handler();
+        } else {
+          if (additionalHandler) additionalHandler();
+        }
       }
     }
 
@@ -25,7 +30,7 @@ export function useOutsideClick<T extends HTMLElement>(
     return () => {
       document.removeEventListener("click", useClickHandler, listenCapturing);
     };
-  }, [handler, listenCapturing, additionalRefs]);
+  }, [handler, listenCapturing, additionalRefs, additionalHandler]);
 
   return ref;
 }
