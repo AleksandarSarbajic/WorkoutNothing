@@ -5,7 +5,7 @@ import MainNav from "./MainNav";
 import { useWorkout } from "../features/workout/Workout";
 import WorkoutTimer from "./WorkoutTimer";
 
-const StyledSidebar = styled.aside`
+export const StyledSidebar = styled.aside`
   position: relative;
   background-color: var(--color-grey-0);
   padding: 3.2rem 2.4rem;

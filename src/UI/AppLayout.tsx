@@ -7,7 +7,7 @@ import Header from "./Header";
 import WorkoutExercises from "../features/workout/WorkoutExercises";
 import { useWorkout } from "../features/workout/Workout";
 
-const StyledAppLayout = styled.div`
+export const StyledAppLayout = styled.div`
   display: grid;
   grid-template-columns: 26rem 1fr;
   grid-template-rows: auto 1fr;

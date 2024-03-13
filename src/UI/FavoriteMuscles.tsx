@@ -33,6 +33,14 @@ const StyledSalesChart = styled.div`
     }
   }
 `;
+
+const StyledHeading = styled.p`
+  font-size: 3.4rem;
+  text-align: center;
+  font-weight: 600;
+  padding: 10rem 0;
+`;
+
 const startDataLight = [
   {
     muscle: "biceps",
@@ -166,37 +174,41 @@ function DashboardWorkoutsChart({ workouts, heading }: ChartProps) {
         {heading}
       </Heading>
 
-      <ResponsiveContainer height={300} width="100%">
-        <PieChart>
-          <Pie
-            data={data}
-            nameKey="muscle"
-            dataKey="value"
-            innerRadius={85}
-            outerRadius={110}
-            cx="50%"
-            cy="50%"
-            paddingAngle={3}
-          >
-            {data.map((entry) => (
-              <Cell
-                fill={entry.color}
-                stroke={entry.color}
-                key={entry.muscle}
-              />
-            ))}
-          </Pie>
+      {data.length !== 0 ? (
+        <ResponsiveContainer height={300} width="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              nameKey="muscle"
+              dataKey="value"
+              innerRadius={85}
+              outerRadius={110}
+              cx="50%"
+              cy="50%"
+              paddingAngle={3}
+            >
+              {data.map((entry) => (
+                <Cell
+                  fill={entry.color}
+                  stroke={entry.color}
+                  key={entry.muscle}
+                />
+              ))}
+            </Pie>
 
-          <Tooltip />
+            <Tooltip />
 
-          <Legend
-            verticalAlign="bottom"
-            align="center"
-            iconSize={15}
-            iconType="circle"
-          />
-        </PieChart>
-      </ResponsiveContainer>
+            <Legend
+              verticalAlign="bottom"
+              align="center"
+              iconSize={15}
+              iconType="circle"
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      ) : (
+        <StyledHeading>Perform a workout first 😀</StyledHeading>
+      )}
     </StyledSalesChart>
   );
 }

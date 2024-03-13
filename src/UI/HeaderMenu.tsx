@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import DarkModeToggle from "./DarkModeToggle";
 import Logout from "../features/auth/Logout";
 
-const StyledHeaderMenu = styled.ul`
+export const StyledHeaderMenu = styled.ul`
   display: flex;
   gap: 0.4rem;
 `;

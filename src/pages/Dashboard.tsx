@@ -84,8 +84,8 @@ function Dashboard() {
           <img
             src={`${
               user?.user_metadata.profile_picture
-                ? user?.user_metadata.profile_picture || "/images/avatar.png"
-                : user?.user_metadata.avatar_url || "/images/avatar.png"
+                ? user?.user_metadata.profile_picture || "default-user.jpg"
+                : user?.user_metadata.avatar_url || "default-user.jpg"
             }`}
           />
           <div>

@@ -9,6 +9,7 @@ function useCreateSettings() {
     onSuccess: (settings) => {
       if (settings) {
         queryClient.setQueryData(["settings"], settings);
+        window.location.reload();
       }
     },
   });
