@@ -27,6 +27,7 @@ const Main = styled.main<{ $open: boolean }>`
   @media only screen and (max-width: 50em) {
     grid-row: 2 / 3;
     grid-column: 1 / -1;
+    ${(props) => !props.$open && `padding: 4rem 2rem 12.4rem;`}
   }
 `;
 

@@ -890,7 +890,12 @@ function ExerciseOrder() {
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
-    useSensor(TouchSensor)
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 10,
+        distance: 10,
+      },
+    })
   );
 
   return (

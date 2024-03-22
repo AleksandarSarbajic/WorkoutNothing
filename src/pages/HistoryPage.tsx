@@ -27,6 +27,14 @@ export const StyledWorkouts = styled.ul`
   }
 `;
 
+const StyledHeading = styled(Row)`
+  @media only screen and (max-width: 50em) {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+`;
+
 function HistoryPage() {
   const { workouts, isLoading } = useWorkoutRange();
 
@@ -57,10 +65,10 @@ function HistoryPage() {
 
   return (
     <>
-      <Row $type="horizontal">
+      <StyledHeading $type="horizontal">
         <Heading as="h1">History</Heading>
         <HistoryCalendar latestDate={latestDate} furthestDate={furthestDate} />
-      </Row>
+      </StyledHeading>
 
       <Row>
         <StyledWorkouts>
