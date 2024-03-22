@@ -70,6 +70,7 @@ import {
   DndContext,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   closestCenter,
   useSensor,
   useSensors,
@@ -740,7 +741,10 @@ function ExerciseHeading({
   const [searchParams, setSearchParams] = useSearchParams();
   const openModal = useModal();
   const navigate = useNavigate();
-  const { dispatch } = useContext(WorkoutContext);
+  const {
+    dispatch,
+    state: { exercises },
+  } = useContext(WorkoutContext);
 
   const callback = useCallback(() => {
     openModal(`CreateNigga-${uniqueId}`);
@@ -748,8 +752,10 @@ function ExerciseHeading({
 
   const bind = useLongPress(callback, {
     onFinish: () => {
-      console.log("Long press finished");
-      openModal(`CreateNigga-${uniqueId}`);
+      dispatch({
+        type: ActionTypes.SORT_EXERCISES,
+        payload: { sorting: true, exercises },
+      });
     },
     onCancel: () => {
       navigate(
@@ -845,7 +851,6 @@ function ExerciseHeading({
             type: ActionTypes.SORT_EXERCISES,
             payload: { sorting: false },
           });
-          console.log("Sorting");
         }}
       >
         <ExerciseOrder />
@@ -884,7 +889,8 @@ function ExerciseOrder() {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
+    useSensor(TouchSensor)
   );
 
   return (
