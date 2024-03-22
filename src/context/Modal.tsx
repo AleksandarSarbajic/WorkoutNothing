@@ -32,6 +32,8 @@ interface WindowType extends ChildrenType {
   name: string;
   padding?: boolean;
   addition?: () => void;
+  capturing?: boolean;
+  id?: string;
 }
 
 const Jump = keyframes`
@@ -140,7 +142,14 @@ function Open({ children, opens: opensWindowName, withOpens }: Opentype) {
   });
 }
 
-function Window({ children, name, padding = false, addition }: WindowType) {
+function Window({
+  children,
+  name,
+  padding = false,
+  addition,
+  capturing = true,
+  id,
+}: WindowType) {
   const { openName, close } = useContext(ModalContext);
   function handler() {
     if (addition) {
@@ -148,7 +157,13 @@ function Window({ children, name, padding = false, addition }: WindowType) {
     }
     close();
   }
-  const ref = useOutsideClick<HTMLDivElement>(handler, true, [], handler);
+  const ref = useOutsideClick<HTMLDivElement>(
+    handler,
+    capturing,
+    [],
+    handler,
+    id
+  );
 
   if (name !== openName) return null;
 
@@ -173,6 +188,13 @@ function Window({ children, name, padding = false, addition }: WindowType) {
       </StyledModal>
     </Overlay>
   );
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useModal() {
+  const { open } = useContext(ModalContext);
+
+  return open;
 }
 
 Modal.Open = Open;

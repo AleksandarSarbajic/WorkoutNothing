@@ -206,7 +206,7 @@ function TemplateItem({
           </Perform>
           <StyledExercises>
             {templateWorkout.exercises.map((exercise) => (
-              <StyledExercise key={exercise.id}>
+              <StyledExercise key={exercise.uniqueId}>
                 {exercise.sets.length} x {exercise.name}
               </StyledExercise>
             ))}

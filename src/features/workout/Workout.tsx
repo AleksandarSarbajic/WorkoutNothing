@@ -2,6 +2,7 @@ import {
   Dispatch,
   ReactNode,
   createContext,
+  useCallback,
   useContext,
   useReducer,
   useRef,
@@ -41,7 +42,7 @@ import {
 import { CommonRow } from "../../UI/Table";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { TbInfinity, TbPinnedFilled, TbReplaceFilled } from "react-icons/tb";
-import Modal from "../../context/Modal";
+import Modal, { useModal } from "../../context/Modal";
 import ConfirmDelete from "../../UI/ConfirmDelete";
 import { useTimerHandler } from "../../context/Timer";
 import ReactDatePicker from "react-datepicker";
@@ -57,6 +58,24 @@ import { useSettings } from "../settings/useSettings";
 import useUpdateWorkout from "./useUpdateWorkout";
 import useInsertTemplate from "../templates/useInsertTemplate";
 import useUpdateTemplate from "../templates/useUpdateTemplate";
+import { useLongPress } from "use-long-press";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
 const StyledButton = css`
   background-color: var(--color-brand-700);
@@ -129,7 +148,31 @@ const StyledNote = styled.div<{ $pinned?: boolean }>`
       height: 2rem;
     }
   }
+  @media only screen and (max-width: 37.5em) {
+    & input {
+      width: 70%;
+    }
+  }
 `;
+
+const StyledSortableItem = styled.div<{ $superSet?: string }>`
+  cursor: pointer;
+  margin: 0.5rem 0 0.5rem -1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1.8rem;
+  border-radius: var(--border-radius-sm);
+  &:hover {
+    background-color: var(--color-grey-300);
+  }
+  ${(props) => props.$superSet && `border-left: 2px solid ${props.$superSet};`}
+  ${(props) =>
+    props.$superSet &&
+    css`
+      padding-left: 1rem;
+      margin-left: -1.3rem;
+    `}
+`;
+
 const StyledAddCancel = styled.div`
   gap: 2rem;
   font-size: 1.8rem;
@@ -444,7 +487,8 @@ function Exercise({ exercise }: { exercise: ExerciseType }) {
         name={exercise.name}
         noteId={note.uniqueId}
         time={exercise.time}
-        id={exercise.id}
+        real_id={exercise.real_id}
+        instuctions={exercise.instructions}
       />
       {note.isOpen && (
         <Note
@@ -683,17 +727,45 @@ function ExerciseHeading({
   name,
   noteId,
   time,
-  id,
+  instuctions,
+  real_id,
 }: {
   uniqueId: number | string;
   name: string;
   noteId: number | string;
   time: { value: number | null; isOpen: boolean; enable: boolean };
-  id: number;
+  instuctions?: string;
+  real_id: number;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const openModal = useModal();
   const navigate = useNavigate();
   const { dispatch } = useContext(WorkoutContext);
+
+  const callback = useCallback(() => {
+    openModal(`CreateNigga-${uniqueId}`);
+  }, [openModal, uniqueId]);
+
+  const bind = useLongPress(callback, {
+    onFinish: () => {
+      console.log("Long press finished");
+      openModal(`CreateNigga-${uniqueId}`);
+    },
+    onCancel: () => {
+      navigate(
+        `/exercises/${real_id}?page=${
+          instuctions?.length === 0 ? "history" : "about"
+        }`
+      );
+      dispatch({ type: "OPEN_CLOSE" });
+    },
+    filterEvents: () => true,
+    threshold: 300,
+    captureEvent: true,
+    cancelOnMovement: 25,
+    cancelOutsideElement: true,
+  });
+
   return (
     <div
       style={{
@@ -702,11 +774,9 @@ function ExerciseHeading({
         justifyContent: "space-between",
         position: "relative",
       }}
+      id={uniqueId.toString()}
     >
-      <button
-        onClick={() => navigate(`/exercises/${id}?page=about`)}
-        style={{ fontSize: "2rem" }}
-      >
+      <button {...bind()} style={{ fontSize: "2rem" }}>
         {name}
       </button>
       <Menus.Toggle id={uniqueId} />
@@ -767,7 +837,20 @@ function ExerciseHeading({
           <Menus.Button icon={<HiTrash />}>Delete exercise</Menus.Button>
         </Modal.Open>
       </Menus.List>
-      <Modal.Window name={`${uniqueId}`}>
+      <Modal.Window
+        name={`CreateNigga-${uniqueId}`}
+        id={uniqueId.toString()}
+        addition={() => {
+          dispatch({
+            type: ActionTypes.SORT_EXERCISES,
+            payload: { sorting: false },
+          });
+          console.log("Sorting");
+        }}
+      >
+        <ExerciseOrder />
+      </Modal.Window>
+      <Modal.Window name={`confirm-delete${uniqueId}`}>
         <ConfirmDelete
           resourceName="Remove exercise?"
           name={name}
@@ -791,6 +874,91 @@ function ExerciseHeading({
       </Modal.Window>
       {time.isOpen && <RestTimer uniqueId={uniqueId} time={time} />}
     </div>
+  );
+}
+
+function ExerciseOrder() {
+  const { dispatch, state } = useContext(WorkoutContext);
+  const [items, setItems] = useState(state.exercises);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  return (
+    <div>
+      <Heading as={"h2"} style={{ marginBottom: "2rem" }}>
+        Change order of exercises
+      </Heading>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis]}
+      >
+        <SortableContext items={items} strategy={verticalListSortingStrategy}>
+          {items.map((exercise: ExerciseType) => (
+            <ExerciseItemSortable key={exercise.uniqueId} exercise={exercise} />
+          ))}
+        </SortableContext>
+      </DndContext>
+    </div>
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleDragEnd(event: any) {
+    const { active, over } = event;
+    console.log(active, over, active.id !== over.id);
+    if (active.id !== over.id) {
+      setItems((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        dispatch({
+          type: ActionTypes.SORT_EXERCISES,
+          payload: {
+            exercises: arrayMove(items, oldIndex, newIndex),
+            sorting: true,
+          },
+        });
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }
+}
+
+function ExerciseItemSortable({ exercise }: { exercise: ExerciseType }) {
+  const { state } = useContext(WorkoutContext);
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: exercise.id,
+    });
+
+  const draggerStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <StyledSortableItem
+      $superSet={
+        state.superSets.find((item) => {
+          const filtered = item.items.find(
+            (item) => item === exercise.uniqueId
+          );
+          return filtered;
+        })?.color
+      }
+      ref={setNodeRef}
+      style={{
+        ...draggerStyle,
+      }}
+      {...attributes}
+      {...listeners}
+    >
+      {exercise.name}
+    </StyledSortableItem>
   );
 }
 

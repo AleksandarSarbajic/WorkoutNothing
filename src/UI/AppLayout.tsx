@@ -47,9 +47,14 @@ function AppLayout() {
     <StyledAppLayout>
       <Header />
       <Sidebar />
-      <Main $open={open}>
-        <Container>{open ? <WorkoutExercises /> : <Outlet />}</Container>
-      </Main>
+      {!open && (
+        <Main $open={open}>
+          <Container>
+            <Outlet />
+          </Container>
+        </Main>
+      )}
+      {open && <WorkoutExercises />}
     </StyledAppLayout>
   );
 }

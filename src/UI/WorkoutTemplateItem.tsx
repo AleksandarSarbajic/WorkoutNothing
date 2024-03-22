@@ -146,7 +146,7 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
 
       <StyledExercises>
         {item?.exercises?.map((exercise: TemplateExercise) => (
-          <Exercise key={exercise.id}>
+          <Exercise key={exercise.uniqueId}>
             <ExerciseHeading>
               <Heading as="h3" style={{ marginBottom: "1rem" }}>
                 {exercise.sets.length} x {exercise.name}

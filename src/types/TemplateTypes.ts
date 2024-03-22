@@ -7,6 +7,7 @@ export interface TemplateExercise {
   uniqueId: string;
   sets: SetType[];
   records?: BestPerformaceRecordsType[];
+  real_id: number;
 }
 
 export interface TemplateTypes {
@@ -21,6 +22,7 @@ export interface TemplateTypes {
 const createExercise = (name: string, id: number): TemplateExercise => ({
   name,
   id,
+  real_id: id,
   uniqueId: uuidv4(),
   sets: Array.from({ length: 2 }, (_, index) => ({
     set: index + 1,

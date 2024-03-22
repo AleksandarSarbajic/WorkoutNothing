@@ -153,7 +153,7 @@ function WorkoutRecapItem({
 
             return typeof exercise === "object" && exercise !== null ? (
               <StyledExercise
-                key={exercise.id}
+                key={exercise.uniqueId}
                 $superSet={
                   workout.superSets.find((item) => {
                     const filtered = item.items.find(

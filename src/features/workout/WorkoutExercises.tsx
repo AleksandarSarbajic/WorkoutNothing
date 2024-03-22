@@ -10,7 +10,29 @@ import WorkoutHeading from "./WorkoutHeading";
 import styled from "styled-components";
 
 const StyledWorkout = styled.div`
+  width: 100%;
   min-height: 100dvh;
+  /* max-width: 120rem; */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3.2rem;
+  background-color: var(--color-grey-50);
+
+  overflow-y: scroll;
+
+  padding: 4rem 10% 6.4rem;
+
+  @media only screen and (max-width: 75em) {
+    padding: 4rem 7.5% 6.4rem;
+  }
+  @media only screen and (max-width: 62.5em) {
+    padding: 4rem 5% 6.4rem;
+  }
+  @media only screen and (max-width: 50em) {
+    grid-row: 2 / 3;
+    grid-column: 1 / -1;
+  }
 `;
 
 function WorkoutExercises() {
@@ -29,7 +51,7 @@ function WorkoutExercises() {
   const ref = useOutsideClick<HTMLDivElement>(handler, true, modalAndMenusRefs);
 
   return (
-    <StyledWorkout ref={ref} style={{ padding: "4rem 4.8rem 6.4rem" }}>
+    <StyledWorkout ref={ref}>
       {!selectIsOpen ? (
         <Modal ref={modalRef}>
           <Menus ref={menusRef}>

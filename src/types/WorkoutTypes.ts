@@ -29,16 +29,19 @@ export interface BestPerformaceRecordsType {
 
 export interface ExerciseType {
   exercise_id?: number;
+  uniqueId_number?: number;
   created_at?: string | number | Date;
   sets: SetType[];
   previousSets: SetType[];
   id: number;
+  real_id: number;
   name: string;
   uniqueId: string;
   note: NoteType;
   time: { value: number | null; isOpen: boolean; enable: boolean };
   unit: string;
   records: BestPerformaceRecordsType[];
+  instructions?: string;
 }
 
 export interface SetType {
@@ -165,6 +168,7 @@ export const ActionTypes = {
   CLOSE_SELECT_EXERCISE: "CLOSE_SELECT_EXERCISE",
   SELECT_EXERCISES: "SELECT_EXERCISES",
   SELECT_EXERCISE: "SELECT_EXERCISE",
+  SORT_EXERCISES: "SORT_EXERCISES",
   ADD_SET: "ADD_SET",
   REMOVE_EXERCISE: "REMOVE_EXERCISE",
   REPLACE_EXERCISE: "REPLACE_EXERCISE",
@@ -230,6 +234,8 @@ export function WORKOUT_REDUCER(
       return selectExercise(state, action.payload);
     case ActionTypes.CLOSE_SELECT_EXERCISE:
       return closeSelectExercise(state);
+    case ActionTypes.SORT_EXERCISES:
+      return sortExercises(state, action.payload);
     case ActionTypes.CHANGE_NAME:
       return changeName(state, action.payload);
     case ActionTypes.CHANGE_NOTE:
@@ -315,7 +321,7 @@ function startTemplate(
       return {
         ...exercise,
         note: {
-          id: exercise.id,
+          id: exercise.real_id,
           uniqueId: uuidv4(),
           value: "",
           isOpen: false,
@@ -356,7 +362,7 @@ function editTemplate(
       return {
         ...exercise,
         note: {
-          id: exercise.id,
+          id: exercise.real_id,
           uniqueId: uuidv4(),
           value: "",
           isOpen: false,
@@ -452,10 +458,10 @@ function selectExercises(
   payload: ExerciseType
 ): InitialStateType {
   const existingExercise = state.selectedExercises.find(
-    (item) => item.id === payload.id
+    (item) => item.real_id === payload.real_id
   );
   const selectedExercises = existingExercise
-    ? state.selectedExercises.filter((item) => item.id !== payload.id)
+    ? state.selectedExercises.filter((item) => item.real_id !== payload.real_id)
     : [...state.selectedExercises, payload];
 
   return { ...state, selectedExercises };
@@ -466,10 +472,10 @@ function selectExercise(
   payload: ExerciseType
 ): InitialStateType {
   const existingExercise = state.selectedExercises.find(
-    (item) => item.id === payload.id
+    (item) => item.real_id === payload.real_id
   );
   const selectedExercises = existingExercise
-    ? state.selectedExercises.filter((item) => item.id !== payload.id)
+    ? state.selectedExercises.filter((item) => item.real_id !== payload.real_id)
     : [payload];
 
   return { ...state, selectedExercises };
@@ -965,7 +971,7 @@ function createSuperSet(
               return item;
             })
             .filter((item) => item.items.length > 0);
-         
+
           return {
             ...state,
             superSets: updatedSuperSets,
@@ -1030,4 +1036,19 @@ function updatePreviousSet(
   });
 
   return { ...state, exercises: updatedExercises as ExerciseType[] };
+}
+
+function sortExercises(
+  state: InitialStateType,
+  payload: { exercises: ExerciseType[]; sorting: boolean }
+) {
+  const { exercises, sorting = true } = payload;
+
+  if (sorting) return { ...state, selectedExercises: exercises };
+  else
+    return {
+      ...state,
+      exercises: state.selectedExercises,
+      selectedExercises: [],
+    };
 }

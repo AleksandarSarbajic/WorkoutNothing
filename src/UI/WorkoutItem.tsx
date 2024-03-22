@@ -275,7 +275,7 @@ function WorkoutItem() {
       <StyledExercises>
         {workoutType.exercises?.map((exercise: ExerciseType) => (
           <Exercise
-            key={exercise.id}
+            key={exercise.uniqueId}
             $superSet={
               workout.superSets.find((item: SuperSetType) =>
                 item.items.includes(exercise.uniqueId)

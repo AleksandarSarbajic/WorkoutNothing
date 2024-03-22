@@ -27,12 +27,17 @@ import {
 } from "../../types/WorkoutTypes";
 
 import AddExerciseForm from "../../UI/AddExerciseForm";
-import { adjustMeasurement } from "../../utils/helpers";
+import { adjustMeasurement, generateNumericUUID } from "../../utils/helpers";
 
-const Exercise = styled.div`
+const Exercise = styled.p`
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-grey-600);
+  @media only screen and (max-width: 37.5em) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const Checked = styled.div`
@@ -82,14 +87,16 @@ function ExerciseRow({
   const [searchParams] = useSearchParams();
   const exerciseParams = searchParams.get("exerciseId");
   const isSelected = selectedExercises.some(
-    (exercise) => exercise.id === exerciseId
+    (exercise) => exercise.real_id === exerciseId
   );
 
   function onSelectHandler() {
     if (type !== "add") return;
     const exerciseTemplate = {
-      id: exerciseId,
+      id: exerciseId + uuidv4(),
+      real_id: exerciseId,
       uniqueId: uuidv4(),
+      uniqueId_number: generateNumericUUID(),
       name,
       unit: settings?.weight,
       sets: [
@@ -118,6 +125,7 @@ function ExerciseRow({
         value: 300,
       },
       records: [],
+      instructions,
     };
     const itemForExtracting = {
       ...(user_exercise?.[user_exercise.length - 1] ?? exerciseTemplate),
@@ -133,8 +141,10 @@ function ExerciseRow({
 
     const extracted = {
       uniqueId: uuidv4(),
-      id: itemForExtracting.exercise_id,
+      id: itemForExtracting.exercise_id + uuidv4(),
+      real_id: itemForExtracting.exercise_id,
       exercise_id: itemForExtracting.exercise_id,
+      uniqueId_number: generateNumericUUID(),
       name: itemForExtracting.name,
       unit: itemForExtracting.unit,
       sets: [
@@ -162,6 +172,7 @@ function ExerciseRow({
       note: itemForExtracting.note,
       time: itemForExtracting.time,
       records: itemForExtracting.records,
+      instructions,
     };
 
     const exercise = user_exercise?.length !== 0 ? extracted : exerciseTemplate;

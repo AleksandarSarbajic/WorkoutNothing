@@ -4,7 +4,8 @@ export function useOutsideClick<T extends HTMLElement>(
   handler: () => void,
   listenCapturing = true,
   additionalRefs: RefObject<HTMLElement>[] = [],
-  additionalHandler?: () => void
+  additionalHandler?: () => void,
+  idOfUnwantedElement?: string
 ): RefObject<T> {
   const ref = useRef<T>(null);
 
@@ -17,9 +18,13 @@ export function useOutsideClick<T extends HTMLElement>(
           (ref) => ref.current && ref.current.contains(e.target as Node)
         )
       ) {
-        if ((e.target as HTMLElement).id !== "overlay") {
+        if (
+          (e.target as HTMLElement).id !== "overlay" &&
+          idOfUnwantedElement !== (e.target as HTMLElement).id
+        ) {
           handler();
         } else {
+          if (idOfUnwantedElement === (e.target as HTMLElement).id) return;
           if (additionalHandler) additionalHandler();
         }
       }
@@ -30,7 +35,13 @@ export function useOutsideClick<T extends HTMLElement>(
     return () => {
       document.removeEventListener("click", useClickHandler, listenCapturing);
     };
-  }, [handler, listenCapturing, additionalRefs, additionalHandler]);
+  }, [
+    handler,
+    listenCapturing,
+    additionalRefs,
+    additionalHandler,
+    idOfUnwantedElement,
+  ]);
 
   return ref;
 }

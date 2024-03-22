@@ -14,6 +14,7 @@ import {
 } from "date-fns";
 // import { differenceInDays } from "date-fns/esm";
 import { Database } from "../services/supabase";
+import { v4 as uuidv4 } from "uuid";
 import {
   BestPerformaceRecordsType,
   ExerciseType,
@@ -472,4 +473,11 @@ export function countNonNullValues(
   const totalCount = counts.reduce((total, count) => total + count, 0);
 
   return totalCount;
+}
+
+export function generateNumericUUID() {
+  const uuid = uuidv4();
+  // Remove dashes and convert to a base 10 number
+  const numericUUID = parseInt(uuid.replace(/-/g, ""), 16);
+  return numericUUID;
 }

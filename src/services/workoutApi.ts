@@ -36,12 +36,12 @@ export async function insertWorkout({ workout }: WorkoutProps) {
           current: false,
         };
       });
-      return { ...exercise, records: changedRecords };
+      return { ...exercise, records: changedRecords, id: exercise.real_id };
     }),
     unit: workout.unit,
     records: totalCount,
   };
-
+  console.log(item);
   const { data, error } = await supabase
     .from("Workouts")
     .insert([{ ...item }])
