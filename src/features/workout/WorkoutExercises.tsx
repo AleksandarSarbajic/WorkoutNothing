@@ -11,8 +11,9 @@ import styled from "styled-components";
 
 const StyledWorkout = styled.div`
   width: 100%;
-  min-height: 100dvh;
-  /* max-width: 120rem; */
+
+  /* min-height: 100dvh; */
+
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -56,34 +57,39 @@ function WorkoutExercises() {
 
   return (
     <StyledWorkout ref={ref}>
-      {!selectIsOpen ? (
-        <Modal ref={modalRef}>
-          <Menus ref={menusRef}>
-            <Row>
-              <WorkoutHeading />
-            </Row>
-            <Row style={{ marginBottom: "2.4rem" }}>
-              <Workout.Name />
-              <Workout.Note
-                type="workout"
-                placeholder="Workout Note"
-                id={"workout"}
-              />
-            </Row>
+      <div>
+        {!selectIsOpen ? (
+          <Modal ref={modalRef}>
+            <Menus ref={menusRef}>
+              <Row>
+                <WorkoutHeading />
+              </Row>
+              <Row style={{ marginBottom: "2.4rem" }}>
+                <Workout.Name />
+                <Workout.Note
+                  type="workout"
+                  placeholder="Workout Note"
+                  id={"workout"}
+                />
+              </Row>
 
-            <Row>
-              {exercises.map((exercise) => (
-                <Workout.Exercise key={exercise.uniqueId} exercise={exercise} />
-              ))}
-            </Row>
-            <Row>
-              <Workout.AddCancel />
-            </Row>
-          </Menus>
-        </Modal>
-      ) : (
-        <WorkoutAddExercises />
-      )}
+              <Row>
+                {exercises.map((exercise) => (
+                  <Workout.Exercise
+                    key={exercise.uniqueId}
+                    exercise={exercise}
+                  />
+                ))}
+              </Row>
+              <Row>
+                <Workout.AddCancel />
+              </Row>
+            </Menus>
+          </Modal>
+        ) : (
+          <WorkoutAddExercises />
+        )}
+      </div>
     </StyledWorkout>
   );
 }
