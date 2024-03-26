@@ -34,6 +34,7 @@ interface WindowType extends ChildrenType {
   addition?: () => void;
   capturing?: boolean;
   id?: string;
+  isHolding?: boolean;
 }
 
 const Jump = keyframes`
@@ -149,6 +150,7 @@ function Window({
   addition,
   capturing = true,
   id,
+  isHolding = false,
 }: WindowType) {
   const { openName, close } = useContext(ModalContext);
   function handler() {
@@ -162,7 +164,8 @@ function Window({
     capturing,
     [],
     handler,
-    id
+    id,
+    isHolding
   );
 
   if (name !== openName) return null;

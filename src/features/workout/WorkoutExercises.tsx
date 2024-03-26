@@ -21,13 +21,13 @@ const StyledWorkout = styled.div`
 
   overflow-y: scroll;
 
-  padding: 4rem 10% 6.4rem;
+  padding: 4rem 10% 12rem 10%;
 
   @media only screen and (max-width: 75em) {
-    padding: 4rem 7.5% 6.4rem;
+    padding: 4rem 7.5% 16rem;
   }
   @media only screen and (max-width: 62.5em) {
-    padding: 4rem 5% 6.4rem;
+    padding: 4rem 5% 16rem;
   }
   @media only screen and (max-width: 50em) {
     grid-row: 2 / 3;

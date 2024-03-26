@@ -19,15 +19,20 @@ export const StyledAppLayout = styled.div`
   }
 `;
 
-const Main = styled.main<{ $open: boolean }>`
+const Main = styled.main<{ $status: string }>`
   background-color: var(--color-grey-50);
 
-  ${(props) => !props.$open && `padding: 4rem 4.8rem 6.4rem;`}
+  padding: 4rem 4.8rem 6.4rem;
   overflow-y: scroll;
   @media only screen and (max-width: 50em) {
     grid-row: 2 / 3;
     grid-column: 1 / -1;
-    ${(props) => !props.$open && `padding: 4rem 2rem 12.4rem;`}
+    padding: 4rem 2rem 16rem;
+    ${(props) => !(props.$status === "idle") && `padding: 4rem 2rem 28rem;`}
+  }
+  @media only screen and (max-width: 31.25em) {
+    padding: 4rem 2rem 12.4rem;
+    ${(props) => !(props.$status === "idle") && `padding: 4rem 2rem 24rem;`}
   }
 `;
 
@@ -41,7 +46,7 @@ const Container = styled.div`
 
 function AppLayout() {
   const {
-    state: { open },
+    state: { open, status },
   } = useWorkout();
 
   return (
@@ -49,7 +54,7 @@ function AppLayout() {
       <Header />
       <Sidebar />
       {!open && (
-        <Main $open={open}>
+        <Main $status={status}>
           <Container>
             <Outlet />
           </Container>

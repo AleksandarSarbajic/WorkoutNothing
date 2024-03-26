@@ -3,7 +3,7 @@ import { useWorkout } from "../features/workout/Workout";
 import { formatTimeWorkout } from "../utils/helpers";
 import { useTimerHandler } from "../context/Timer";
 
-const StyledTimer = styled.button`
+const StyledTimer = styled.button<{ $customTimerIsOpen: boolean }>`
   padding: 2rem;
   background-color: var(--color-grey-100);
   border-radius: var(--border-radius-sm);
@@ -14,12 +14,12 @@ const StyledTimer = styled.button`
     position: absolute;
     width: 101%;
     top: -9rem;
+    ${(props) => props.$customTimerIsOpen && `top: -11.5rem;`}
     border-radius: 0;
     z-index: 3;
     padding: 1.6rem;
     p {
       font-size: 2rem;
-
       display: block;
       white-space: nowrap;
       overflow: hidden;
@@ -49,6 +49,7 @@ function WorkoutTimer() {
 
   return (
     <StyledTimer
+      $customTimerIsOpen={customTimerIsOpen}
       onClick={() => {
         dispatch({ type: "OPEN_CLOSE" });
       }}

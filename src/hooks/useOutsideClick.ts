@@ -5,12 +5,17 @@ export function useOutsideClick<T extends HTMLElement>(
   listenCapturing = true,
   additionalRefs: RefObject<HTMLElement>[] = [],
   additionalHandler?: () => void,
-  idOfUnwantedElement?: string
+  idOfUnwantedElement?: string,
+  isHolding?: boolean
 ): RefObject<T> {
   const ref = useRef<T>(null);
 
   useEffect(() => {
-    function useClickHandler(e: MouseEvent) {
+    function useClickHandler(e: MouseEvent | TouchEvent) {
+      console.log(isHolding);
+      const targetId = (e.target as HTMLElement).id;
+      if (isHolding) return;
+
       if (
         ref.current &&
         !ref.current.contains(e.target as Node) &&
@@ -18,22 +23,25 @@ export function useOutsideClick<T extends HTMLElement>(
           (ref) => ref.current && ref.current.contains(e.target as Node)
         )
       ) {
-        if (
-          (e.target as HTMLElement).id !== "overlay" &&
-          idOfUnwantedElement !== (e.target as HTMLElement).id
-        ) {
+        if (targetId !== "overlay" && idOfUnwantedElement !== targetId) {
           handler();
         } else {
-          if (idOfUnwantedElement === (e.target as HTMLElement).id) return;
+          if (idOfUnwantedElement === targetId) return;
           if (additionalHandler) additionalHandler();
         }
       }
     }
 
     document.addEventListener("click", useClickHandler, listenCapturing);
+    document.addEventListener("touchstart", useClickHandler, listenCapturing);
 
     return () => {
       document.removeEventListener("click", useClickHandler, listenCapturing);
+      document.removeEventListener(
+        "touchstart",
+        useClickHandler,
+        listenCapturing
+      );
     };
   }, [
     handler,
@@ -41,6 +49,7 @@ export function useOutsideClick<T extends HTMLElement>(
     additionalRefs,
     additionalHandler,
     idOfUnwantedElement,
+    isHolding,
   ]);
 
   return ref;

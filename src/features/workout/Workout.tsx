@@ -69,7 +69,7 @@ import {
 import {
   DndContext,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
   TouchSensor,
   closestCenter,
   useSensor,
@@ -694,6 +694,8 @@ function AddCancel() {
     time: { pause },
   } = useContext(WorkoutContext);
   const [searchParams, setSearchParamas] = useSearchParams();
+  const { handleRestart } = useTimerHandler();
+
   return (
     <StyledAddCancel>
       <button
@@ -715,6 +717,7 @@ function AddCancel() {
           disabled={false}
           onConfirm={() => {
             pause();
+            handleRestart();
             dispatch({ type: ActionTypes.RESTART_WORKOUT });
           }}
         />
@@ -739,6 +742,7 @@ function ExerciseHeading({
   real_id: number;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isHolding, setIsHolding] = useState(false);
   const openModal = useModal();
   const navigate = useNavigate();
   const {
@@ -756,6 +760,13 @@ function ExerciseHeading({
         type: ActionTypes.SORT_EXERCISES,
         payload: { sorting: true, exercises },
       });
+
+      setTimeout(() => {
+        setIsHolding(false);
+      }, 200);
+    },
+    onStart: () => {
+      setIsHolding(true);
     },
     onCancel: () => {
       navigate(
@@ -852,6 +863,7 @@ function ExerciseHeading({
             payload: { sorting: false },
           });
         }}
+        isHolding={isHolding}
       >
         <ExerciseOrder />
       </Modal.Window>
@@ -886,16 +898,11 @@ function ExerciseOrder() {
   const { dispatch, state } = useContext(WorkoutContext);
   const [items, setItems] = useState(state.exercises);
   const sensors = useSensors(
-    useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 10,
-        distance: 10,
-      },
-    })
+    useSensor(TouchSensor),
+    useSensor(MouseSensor)
   );
 
   return (
@@ -950,6 +957,8 @@ function ExerciseItemSortable({ exercise }: { exercise: ExerciseType }) {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
+  console.log(draggerStyle);
 
   return (
     <StyledSortableItem
@@ -1370,6 +1379,8 @@ function Finish() {
   };
   const { hours, minutes, seconds } = convertSecondsToTime(totalSeconds);
 
+  const { handleRestart } = useTimerHandler();
+
   const modifiedState = {
     ...extractedState,
     unit: settings?.weight || "kg",
@@ -1542,6 +1553,7 @@ function Finish() {
             ) {
               audio.play();
               pause();
+              handleRestart();
               dispatch({ type: ActionTypes.RESTART_WORKOUT });
             }
           }}
