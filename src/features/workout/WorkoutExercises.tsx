@@ -32,6 +32,10 @@ const StyledWorkout = styled.div`
   @media only screen and (max-width: 50em) {
     grid-row: 2 / 3;
     grid-column: 1 / -1;
+    padding: 4rem 5% 24rem;
+  }
+  @media only screen and (max-width: 37.5em) {
+    padding: 4rem 2rem 20rem;
   }
 `;
 

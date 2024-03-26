@@ -41,7 +41,7 @@ import {
   SuperSetType,
   WORKOUT_REDUCER,
 } from "../../types/WorkoutTypes";
-import { CommonRow } from "../../UI/Table";
+
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { TbInfinity, TbPinnedFilled, TbReplaceFilled } from "react-icons/tb";
 import Modal, { useModal } from "../../context/Modal";
@@ -229,9 +229,32 @@ const StyledExercise = styled.div<{ $superSet?: string }>`
       background-color: rgba(99, 101, 241, 0.1);
     }
   }
+
+  @media only screen and (max-width: 37.5em) {
+    padding: 2.4rem;
+  }
 `;
-const StyledExerciseHeader = styled(CommonRow)`
+const StyledExerciseHeader = styled.div`
+  grid-template-columns: 0.2fr 1fr 1.1fr 1.1fr 0.15fr;
+  display: grid;
+
+  column-gap: 2.4rem;
+  align-items: center;
+  transition: none;
   text-align: center;
+  @media only screen and (max-width: 37.5em) {
+    grid-template-columns: 0.2fr 1fr 1.1fr 1.1fr 0.25fr;
+  }
+  @media only screen and (max-width: 31.25em) {
+    grid-template-columns: 0.2fr 0.95fr 1.1fr 1.1fr 0.3fr;
+  }
+  @media only screen and (max-width: 28em) {
+    grid-template-columns: 0.2fr 0.85fr 1.1fr 1.1fr 0.3fr;
+  }
+  @media only screen and (max-width: 25em) {
+    gap: 2rem;
+    grid-template-columns: 0.2fr 0.6fr 1fr 1fr 0.5fr;
+  }
 `;
 
 const CheckAnimation = keyframes`
@@ -253,7 +276,14 @@ const StyledSetButton = styled.span<{ $variation: string }>`
   ${(props) => props.$variation === "failure" && "color: #ef4444;"}
 `;
 
-const StyledSet = styled(CommonRow)<{ $checked: boolean }>`
+const StyledSet = styled.div<{ $checked: boolean }>`
+  display: grid;
+  grid-template-columns: 0.2fr 1fr 1fr 1fr 0.1fr;
+
+  column-gap: 2.4rem;
+  align-items: center;
+  transition: none;
+
   text-align: center;
   padding: 1rem 0;
   border-radius: var(--border-radius-sm);
@@ -291,6 +321,15 @@ const StyledSet = styled(CommonRow)<{ $checked: boolean }>`
         background-color: var(--color-green-100);
         animation: ${CheckAnimation} 0.4s ease-in-out;
       `}
+  }
+  @media only screen and (max-width: 31.25em) {
+    grid-template-columns: 0.2fr 0.9fr 1fr 1fr 0.1fr;
+  }
+  @media only screen and (max-width: 28em) {
+    grid-template-columns: 0.2fr 0.9fr 1fr 1fr 0.1fr;
+  }
+  @media only screen and (max-width: 25em) {
+    grid-template-columns: 0.2fr 0.8fr 1.1fr 1.1fr 0.1fr;
   }
 `;
 
@@ -502,7 +541,7 @@ function Exercise({ exercise }: { exercise: ExerciseType }) {
           isPinned={note.isPinned}
         />
       )}
-      <StyledExerciseHeader $columns="0.2fr 1fr 1fr 1fr 0.15fr">
+      <StyledExerciseHeader>
         <div>Set</div>
         <div>Previous</div>
         <div style={{ textTransform: "capitalize" }}>{settings?.weight}</div>
@@ -1217,7 +1256,7 @@ function Set({
   const previous = set.previous?.split(" x ");
 
   return (
-    <StyledSet $columns="0.2fr 1fr 1fr 1fr 0.1fr" $checked={isChecked}>
+    <StyledSet $checked={isChecked}>
       <SetButton set={set} uniqueId={uniqueId} />
 
       <button
