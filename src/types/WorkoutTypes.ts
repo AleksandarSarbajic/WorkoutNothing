@@ -3,6 +3,10 @@ import { TemplateTypes } from "./TemplateTypes";
 import { adjustMeasurement } from "../utils/helpers";
 import { Database } from "../services/supabase";
 
+export interface Unit {
+  unit: string;
+}
+
 export interface NoteType {
   id: string | number;
   uniqueId: string;
@@ -16,18 +20,27 @@ export interface BestPerformaceRecordsTypeObject {
   value: number;
   setId: string;
 }
+interface CreateSuperSetPayload {
+  exerciseId: string;
+  select: boolean;
+  clean?: boolean;
+}
 
-export interface BestPerformaceRecordsType {
+interface ContainsItemsResult {
+  containsItems: boolean;
+  setsWithItems: SuperSetType[];
+  setWithMostItems: SuperSetType | null;
+}
+export interface BestPerformaceRecordsType extends Unit {
   weight: BestPerformaceRecordsTypeObject;
   volume: BestPerformaceRecordsTypeObject;
   RM: BestPerformaceRecordsTypeObject;
   at: string;
   id: string;
-  unit: string;
   current?: boolean;
 }
 
-export interface ExerciseType {
+export interface ExerciseType extends Unit {
   exercise_id?: number;
   uniqueId_number?: number;
   created_at?: string | number | Date;
@@ -39,7 +52,6 @@ export interface ExerciseType {
   uniqueId: string;
   note: NoteType;
   time: { value: number | null; isOpen: boolean; enable: boolean };
-  unit: string;
   records: BestPerformaceRecordsType[];
   instructions?: string;
 }
@@ -55,7 +67,7 @@ export interface SetType {
   selected: boolean;
 }
 
-export interface WorkoutSupabase {
+export interface WorkoutSupabase extends Unit {
   id: number;
   created_at: string;
   end_time: string;
@@ -65,8 +77,22 @@ export interface WorkoutSupabase {
   workout_time: string;
   superSets: SuperSetType[];
   exercises: ExerciseType[];
-  unit: string;
+
   records: number;
+}
+
+export interface ExerciseTimeIDProps {
+  uniqueId: number | string;
+
+  time: { value: number | null; isOpen: boolean; enable: boolean };
+}
+
+export interface ExerciseHeadingProps extends ExerciseTimeIDProps {
+  name: string;
+  noteId: number | string;
+  time: { value: number | null; isOpen: boolean; enable: boolean };
+  instuctions?: string;
+  real_id: number;
 }
 
 export interface SuperSetType {
@@ -82,8 +108,17 @@ export interface BestPerformaceType {
   id: string;
   name?: string;
 }
+export interface SetPayload {
+  setId: string;
+  exerciseId: string;
+}
 
-export interface InitialStateType {
+export interface UpdatePreviousPayload extends SetPayload {
+  weight: number | null;
+  reps: number | null;
+}
+
+export interface InitialStateType extends Unit {
   id?: number;
   exercises: ExerciseType[];
   selectedExercises: ExerciseType[];
@@ -98,7 +133,6 @@ export interface InitialStateType {
   open: boolean;
   selectIsOpen: boolean;
   note: string;
-  unit: string;
   edit: boolean;
   template: boolean;
   templateId?: number;
@@ -262,10 +296,7 @@ export function WORKOUT_REDUCER(
   }
 }
 
-function startWorkout(
-  _: InitialStateType,
-  payload: { unit: string }
-): InitialStateType {
+function startWorkout(_: InitialStateType, payload: Unit): InitialStateType {
   const unit = payload.unit;
   return {
     ...InitialState,
@@ -305,11 +336,16 @@ function performWorkoutAgain(_: InitialStateType, payload: WorkoutSupabase) {
   };
 }
 
+export interface TempalatePayload {
+  item: TemplateTypes;
+  unit: string;
+}
+
 function startTemplate(
   _: InitialStateType,
   payload: {
-    item: TemplateTypes;
-    unit: string;
+    item: TempalatePayload["item"];
+    unit: TempalatePayload["unit"];
     settings: Database["public"]["Tables"]["settings"]["Row"];
   }
 ) {
@@ -350,10 +386,7 @@ function startTemplate(
   };
 }
 
-function editTemplate(
-  _: InitialStateType,
-  payload: { item: TemplateTypes; unit: string }
-) {
+function editTemplate(_: InitialStateType, payload: TempalatePayload) {
   const { item, unit } = payload;
 
   return {
@@ -591,7 +624,7 @@ function replaceExercise(
 
 function deleteSet(
   state: InitialStateType,
-  payload: { setId: string; exerciseId: string }
+  payload: SetPayload
 ): InitialStateType {
   const { exerciseId, setId } = payload;
 
@@ -701,10 +734,6 @@ function updateSet(
 
   const updatedSets = updatedExercises.map((exercise) => {
     const curIndex = exercise.sets.findIndex((seted) => seted.id === setId);
-    // const indexsess = exercise.sets
-    //   .slice(0, curIndex)
-    //   .reverse()
-    //   .find((set) => set.set !== null);
 
     const allNulls = exercise.sets.every((item) => item.set === null);
 
@@ -801,18 +830,6 @@ function updateTime(
   });
 
   return { ...state, exercises: updatedExercises as ExerciseType[] };
-}
-
-interface CreateSuperSetPayload {
-  exerciseId: string;
-  select: boolean;
-  clean?: boolean;
-}
-
-interface ContainsItemsResult {
-  containsItems: boolean;
-  setsWithItems: SuperSetType[];
-  setWithMostItems: SuperSetType | null;
 }
 
 export function containsItemsFromSelectedSuperSets(
@@ -1014,7 +1031,7 @@ function createSuperSet(
 
 function updatePreviousSet(
   state: InitialStateType,
-  payload: { setId: string; exerciseId: string; weight: number; reps: number }
+  payload: UpdatePreviousPayload
 ) {
   const { exerciseId, setId, weight, reps } = payload;
   const updatedExercises = state.exercises.map((exercise) => {

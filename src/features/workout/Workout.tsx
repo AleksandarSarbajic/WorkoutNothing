@@ -32,6 +32,8 @@ import {
 import {
   ActionType,
   ActionTypes,
+  ExerciseHeadingProps,
+  ExerciseTimeIDProps,
   ExerciseType,
   InitialState,
   InitialStateType,
@@ -733,14 +735,7 @@ function ExerciseHeading({
   time,
   instuctions,
   real_id,
-}: {
-  uniqueId: number | string;
-  name: string;
-  noteId: number | string;
-  time: { value: number | null; isOpen: boolean; enable: boolean };
-  instuctions?: string;
-  real_id: number;
-}) {
+}: ExerciseHeadingProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isHolding, setIsHolding] = useState(false);
   const openModal = useModal();
@@ -928,7 +923,7 @@ function ExerciseOrder() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleDragEnd(event: any) {
     const { active, over } = event;
-   
+
     if (active.id !== over.id) {
       setItems((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
@@ -957,8 +952,6 @@ function ExerciseItemSortable({ exercise }: { exercise: ExerciseType }) {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
-
 
   return (
     <StyledSortableItem
@@ -1042,15 +1035,9 @@ function CreateSuperset() {
   );
 }
 
-function RestTimer({
-  uniqueId,
-  time,
-}: {
-  uniqueId: number | string;
-  time: { value: number | null; isOpen: boolean; enable: boolean };
-}) {
+function RestTimer({ uniqueId, time }: ExerciseTimeIDProps) {
   const { dispatch } = useContext(WorkoutContext);
-  
+
   const initialStartDate = (() => {
     const date = new Date();
     const timerValue = (time.value ?? 300) / 60;
@@ -1216,8 +1203,8 @@ function Set({
   time,
 }: {
   set: SetType;
-  uniqueId: number | string;
-  time: { value: number | null; isOpen: boolean; enable: boolean };
+  uniqueId: ExerciseTimeIDProps["uniqueId"];
+  time: ExerciseTimeIDProps["time"];
 }) {
   const {
     dispatch,

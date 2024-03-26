@@ -15,6 +15,15 @@ const StyledTable = styled.div`
   overflow: hidden;
 `;
 
+interface RecordProps {
+  percentage: number;
+  repetitions: number;
+  weight: number;
+  unit: string;
+  id?: number;
+  name?: string;
+}
+
 export const CommonRow = styled.div<{ $columns: string }>`
   display: grid;
   grid-template-columns: ${(props) => props.$columns};
@@ -143,13 +152,7 @@ function Body({
     | ExerciseType[]
     | BestPerformaceType[]
     | Measure[]
-    | {
-        percentage: number;
-        repetitions: number;
-        weight: number;
-        unit: string;
-        id?: number;
-      }[]
+    | RecordProps[]
     | maxWeightsForRepsProps[];
   render: (
     item:
@@ -158,14 +161,7 @@ function Body({
       | BestPerformaceType
       | Measure
       | maxWeightsForRepsProps
-      | {
-          percentage: number;
-          repetitions: number;
-          weight: number;
-          unit: string;
-          id?: number;
-          name?: string;
-        },
+      | RecordProps,
     i: number
   ) => ReactElement;
 
