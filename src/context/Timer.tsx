@@ -279,7 +279,7 @@ function ModalItem() {
   })();
 
   const [startDate, setStartDate] = useState(initialStartDate);
-  console.log(startDate);
+
   const convertTime = (time: Date) => {
     const totalMinutes = time.getHours() * 60;
     const totalSeconds = totalMinutes + time.getMinutes();

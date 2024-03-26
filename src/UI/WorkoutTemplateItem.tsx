@@ -46,6 +46,18 @@ const ExerciseHeading = styled.div`
   font-size: 2.2rem;
 
   margin: 0.5rem 0 1rem;
+  gap: 2.4rem;
+`;
+
+const ExerciseHeadingName = styled.div`
+  font-size: 2rem;
+  & > p:first-child {
+    min-width: 3rem;
+    width: max-content;
+  }
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 `;
 
 const StyledExercises = styled.ul`
@@ -148,9 +160,9 @@ function WorkoutTemplateItem({ item }: { item: TemplateTypes }) {
         {item?.exercises?.map((exercise: TemplateExercise) => (
           <Exercise key={exercise.uniqueId}>
             <ExerciseHeading>
-              <Heading as="h3" style={{ marginBottom: "1rem" }}>
-                {exercise.sets.length} x {exercise.name}
-              </Heading>
+              <ExerciseHeadingName>
+                <p>{exercise.sets.length} x</p> <p>{exercise.name}</p>
+              </ExerciseHeadingName>
               <StyledQuestion
                 onClick={() => {
                   navigate(`/exercises/${exercise.id}?page=about`);

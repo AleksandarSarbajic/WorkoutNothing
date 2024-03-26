@@ -928,7 +928,7 @@ function ExerciseOrder() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleDragEnd(event: any) {
     const { active, over } = event;
-    console.log(active, over, active.id !== over.id);
+   
     if (active.id !== over.id) {
       setItems((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
@@ -958,7 +958,7 @@ function ExerciseItemSortable({ exercise }: { exercise: ExerciseType }) {
     transition,
   };
 
-  console.log(draggerStyle);
+
 
   return (
     <StyledSortableItem
@@ -1050,16 +1050,16 @@ function RestTimer({
   time: { value: number | null; isOpen: boolean; enable: boolean };
 }) {
   const { dispatch } = useContext(WorkoutContext);
-  console.log(time);
+  
   const initialStartDate = (() => {
     const date = new Date();
     const timerValue = (time.value ?? 300) / 60;
     date.setHours(timerValue, 0, 0, 0);
     return date;
   })();
-  console.log(initialStartDate);
+
   const [startDate, setStartDate] = useState(initialStartDate);
-  console.log(startDate);
+
   const convertTime = (time: Date) => {
     const totalMinutes = time.getHours() * 60;
     const totalSeconds = totalMinutes + time.getMinutes();

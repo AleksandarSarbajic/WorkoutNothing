@@ -12,7 +12,6 @@ export function useOutsideClick<T extends HTMLElement>(
 
   useEffect(() => {
     function useClickHandler(e: MouseEvent | TouchEvent) {
-      console.log(isHolding);
       const targetId = (e.target as HTMLElement).id;
       if (isHolding) return;
 
