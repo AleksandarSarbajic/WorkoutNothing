@@ -42,7 +42,16 @@ export async function insertTemplate({ workout }: WorkoutProps) {
 }
 
 export async function getTemplates() {
-  const { data, error } = await supabase.from("Templates").select();
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError) {
+    throw new Error(userError.message);
+  }
+
+  const { data, error } = await supabase
+    .from("Templates")
+    .select()
+    .eq("user_id", userData?.user.id);
 
   if (error) {
     throw new Error(error.message);
