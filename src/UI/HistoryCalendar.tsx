@@ -31,6 +31,7 @@ const StyledInput = styled.button`
 
 const DatePickerInput = forwardRef<HTMLButtonElement, PickerTypes>(
   ({ value = "", onClick }, ref) => {
+    console.log(value);
     return (
       <StyledInput type="button" onClick={onClick} ref={ref}>
         {value}
@@ -49,22 +50,32 @@ function HistoryCalendar({
   const [searchParams, setSearchParams] = useSearchParams();
   const { workouts = [] } = useWorkouts();
 
-  const [startDate, setStartDate] = useState(furthestDate || new Date());
-  const [endDate, setEndDate] = useState(latestDate || new Date());
+  const startDateParam = searchParams.get("startDate");
+  const endDateParam = searchParams.get("endDate");
+
+  const [startDate, setStartDate] = useState(
+    startDateParam ? new Date(startDateParam) : furthestDate || new Date()
+  );
+  const [endDate, setEndDate] = useState(
+    endDateParam ? new Date(endDateParam) : latestDate || new Date()
+  );
+
   const onChange = (dates: [Date, Date]) => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
 
-    if (start !== null) {
+    if (end !== null && start !== null) {
       searchParams.set("startDate", start.toISOString());
       setSearchParams(searchParams);
-    }
-    if (end !== null) {
       searchParams.set("endDate", end.toISOString());
       setSearchParams(searchParams);
+
+      latestDate = end;
+      furthestDate = start;
     }
   };
+
   function onClearHandler() {
     searchParams.delete("startDate");
     searchParams.delete("endDate");
