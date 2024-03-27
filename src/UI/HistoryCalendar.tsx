@@ -31,7 +31,6 @@ const StyledInput = styled.button`
 
 const DatePickerInput = forwardRef<HTMLButtonElement, PickerTypes>(
   ({ value = "", onClick }, ref) => {
-    console.log(value);
     return (
       <StyledInput type="button" onClick={onClick} ref={ref}>
         {value}
@@ -70,9 +69,6 @@ function HistoryCalendar({
       setSearchParams(searchParams);
       searchParams.set("endDate", end.toISOString());
       setSearchParams(searchParams);
-
-      latestDate = end;
-      furthestDate = start;
     }
   };
 
