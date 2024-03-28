@@ -201,7 +201,7 @@ function WorkoutItem() {
           <StyledExercise key={item.id}>
             <div style={{ marginBottom: "2rem" }}>
               <StyledExerciseSet>
-                <span>{item.set}</span>
+                <span>{item.set}. set</span>
                 <p>
                   {adjustedWeight.value} {adjustedWeight.unit} x {item.reps}
                 </p>

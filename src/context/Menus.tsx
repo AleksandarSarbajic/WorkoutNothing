@@ -27,6 +27,7 @@ interface IdProps extends ChildrenProps {
   icon?: React.ReactElement;
   text?: React.ReactElement;
   direction?: "left" | "right";
+  additional?: number;
 }
 
 interface ButtonProps {
@@ -74,6 +75,7 @@ const StyledList = styled.ul<ListPostion>`
 
   right: ${(props) => props.$position?.x ?? 0}px;
   top: ${(props) => props.$position?.y ?? 0}px;
+  z-index: 9;
 `;
 
 const StyledButton = styled.button`
@@ -131,7 +133,13 @@ const Menus = React.forwardRef<HTMLDivElement, ChildrenProps>(
   }
 ) as MenusComponent;
 
-function Toggle({ id, icon, text, direction = "left" }: IdProps) {
+function Toggle({
+  id,
+  icon,
+  text,
+  direction = "left",
+  additional = 1,
+}: IdProps) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -142,7 +150,7 @@ function Toggle({ id, icon, text, direction = "left" }: IdProps) {
     setPosition({
       x:
         window.innerWidth -
-        (direction === "left" ? rect.width : rect.width * 4) -
+        (direction === "left" ? rect.width : rect.width * 4 + additional) -
         rect.x,
       y: rect.y + 2,
     });

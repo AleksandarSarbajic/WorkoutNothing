@@ -6,6 +6,7 @@ import { useWorkout as useWorkoutApi } from "./Workout";
 import { WorkoutSupabase } from "../../types/WorkoutTypes";
 import useWorkout from "./useWorkout";
 import Confirm from "../../UI/Confirm";
+import { HiPencil, HiTrash } from "react-icons/hi2";
 
 function WorkoutHistoryHeading() {
   const {
@@ -33,12 +34,13 @@ function WorkoutHistoryHeading() {
             <Menus.List id={"workoutHeading--history"}>
               {status !== "idle" ? (
                 <Modal.Open opens="edit-workout-history">
-                  <Menus.Button>
+                  <Menus.Button icon={<HiPencil />}>
                     <p>Edit Workout</p>
                   </Menus.Button>
                 </Modal.Open>
               ) : (
                 <Menus.Button
+                  icon={<HiPencil />}
                   onClick={() => {
                     editWorkoutHandler();
                   }}
@@ -48,7 +50,7 @@ function WorkoutHistoryHeading() {
               )}
 
               <Modal.Open opens="workoutHeading--history--modal">
-                <Menus.Button>Delete</Menus.Button>
+                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
               </Modal.Open>
             </Menus.List>
             <Modal.Window name="edit-workout-history">

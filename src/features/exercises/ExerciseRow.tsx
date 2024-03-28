@@ -12,6 +12,7 @@ import {
   HiInformationCircle,
   HiOutlineCheck,
   HiPencil,
+  HiTrash,
 } from "react-icons/hi2";
 import { FaMedal } from "react-icons/fa";
 import { Measure } from "../../types/MeasureTableTypes";
@@ -28,6 +29,8 @@ import {
 
 import AddExerciseForm from "../../UI/AddExerciseForm";
 import { adjustMeasurement, generateNumericUUID } from "../../utils/helpers";
+import ConfirmDelete from "../../UI/ConfirmDelete";
+import useDeleteExercise from "./useDeleteExercise";
 
 const StyledDifficulty = styled.div`
   @media only screen and (max-width: 37.5em) {
@@ -90,6 +93,9 @@ function ExerciseRow({
   const user_exercise = user_exercises?.filter(
     (item) => item.exercise_id === +exercise.id
   );
+
+  const { deleteExercise, isPending: isDeletingExercise } = useDeleteExercise();
+
   const [searchParams] = useSearchParams();
   const exerciseParams = searchParams.get("exerciseId");
   const isSelected = selectedExercises.some(
@@ -120,7 +126,7 @@ function ExerciseRow({
       note: {
         id: exerciseId,
         uniqueId: uuidv4(),
-        value: null,
+        value: "",
         isOpen: false,
         isPinned: false,
         type: "exercise",
@@ -216,16 +222,25 @@ function ExerciseRow({
                       </Modal.Open>
                     </Menus.Button>
                   )}
-                  <Menus.Button
-                    icon={<HiInformationCircle />}
-                    onClick={() => {
-                      if (instructions.length === 0)
-                        navigate(`${exerciseId}?page=history`);
-                      else navigate(`${exerciseId}?page=about`);
-                    }}
-                  >
-                    <p>About</p>
-                  </Menus.Button>
+                  {user_id !== null && (
+                    <Menus.Button icon={<HiTrash />}>
+                      <Modal.Open opens="delete-exercise">
+                        <p>Delete exercise</p>
+                      </Modal.Open>
+                    </Menus.Button>
+                  )}
+                  {instructions.length !== 0 && (
+                    <Menus.Button
+                      icon={<HiInformationCircle />}
+                      onClick={() => {
+                        if (instructions.length === 0)
+                          navigate(`${exerciseId}?page=history`);
+                        else navigate(`${exerciseId}?page=about`);
+                      }}
+                    >
+                      <p>About</p>
+                    </Menus.Button>
+                  )}
                   <Menus.Button
                     icon={<HiCalendarDays />}
                     onClick={() => navigate(`${exerciseId}?page=history`)}
@@ -253,6 +268,16 @@ function ExerciseRow({
                   category={muscle}
                   bodyPart={equipment}
                   exerciseId={exerciseId}
+                />
+              </Modal.Window>
+              <Modal.Window name="delete-exercise">
+                <ConfirmDelete
+                  resourceName={exercise.name || "Exercise"}
+                  disabled={isDeletingExercise}
+                  onConfirm={() => {
+                    deleteExercise(+exerciseId);
+                  }}
+                  text="Are you sure you want to remove this exercise? This cannot be undone."
                 />
               </Modal.Window>
             </Modal>

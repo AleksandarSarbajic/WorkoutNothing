@@ -21,7 +21,9 @@ export async function insertWorkout({ workout }: WorkoutProps) {
   const filteredRecords = workout.exercises.flatMap((exercise) =>
     exercise.records.filter((record) => record.current)
   );
+
   const totalCount = countNonNullValues(filteredRecords);
+
   const item = {
     name: workout.name,
     note: workout.note,

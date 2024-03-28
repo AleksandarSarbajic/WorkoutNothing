@@ -68,7 +68,7 @@ function UpdateUserDataForm() {
         }
       />
 
-      <FormRow>
+      <FormRow buttons={true}>
         <Button
           type="reset"
           $variation="secondary"

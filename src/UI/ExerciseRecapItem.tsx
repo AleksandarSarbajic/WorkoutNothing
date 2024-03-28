@@ -137,7 +137,7 @@ function ExerciseRecapItem({
           return (
             <StyledExercise key={set.id}>
               <div>
-                {index + 1} {adjustedWeight.value} {adjustedWeight.unit} x{" "}
+                {index + 1}. {adjustedWeight.value} {adjustedWeight.unit} x{" "}
                 {set.reps}
                 <div>
                   {exerciseFiltered[0].records.map((record) => {

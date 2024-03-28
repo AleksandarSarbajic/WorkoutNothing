@@ -1,7 +1,7 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const StyledFormRow = styled.div<{ $grid?: string }>`
+const StyledFormRow = styled.div<{ $grid?: string; $buttons?: boolean }>`
   display: grid;
   align-items: center;
   grid-template-columns: 24rem 1fr 1.2fr;
@@ -29,6 +29,15 @@ const StyledFormRow = styled.div<{ $grid?: string }>`
     justify-content: flex-end;
     gap: 1.2rem;
   }
+  @media only screen and (max-width: 50em) {
+    ${(props) =>
+      !props.$buttons &&
+      css`
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      `}
+  }
 `;
 
 const Label = styled.label`
@@ -45,14 +54,16 @@ function FormRow({
   error,
   children,
   style,
+  buttons,
 }: {
   label?: string;
   error?: string;
   children: React.ReactNode;
   style?: string;
+  buttons?: boolean;
 }) {
   return (
-    <StyledFormRow $grid={style}>
+    <StyledFormRow $grid={style} $buttons={buttons}>
       {label && React.isValidElement(children) && (
         <Label htmlFor={children.props.id}>{label}</Label>
       )}

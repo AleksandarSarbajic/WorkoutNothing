@@ -154,8 +154,8 @@ function App() {
                   fontSize: "16px",
                   maxWidth: "500px",
                   padding: "16px 24px",
-                  backgroundColor: "var(--color-black-100)",
-                  color: "#c1c2c3",
+                  backgroundColor: "var(--color-grey-100)",
+                  color: "var(--color-grey-900)",
                 },
               }}
             />

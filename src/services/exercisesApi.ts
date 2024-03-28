@@ -90,7 +90,7 @@ export async function updateExercise(exercise: {
     .eq("id", exercise.id)
     .select();
 
-  if (error) throw new Error("Exercise could not be added");
+  if (error) throw new Error("Exercise could not be updated");
 
   return data;
 }
@@ -102,14 +102,19 @@ export async function insertExercises({
 }) {
   const changedExercises = exercises.map((exercise) => {
     return {
-      exercise_id: exercise.id,
+      exercise_id: exercise.real_id,
       name: exercise.name,
       uniqueId: exercise.uniqueId,
       time: exercise.time,
       sets: exercise.sets,
       note: exercise.note,
       unit: exercise.unit,
-      records: exercise.records,
+      records: exercise.records.map((record) => {
+        return {
+          ...record,
+          current: false,
+        };
+      }),
     };
   });
 
@@ -117,6 +122,7 @@ export async function insertExercises({
     .from("user_exercises")
     .insert(changedExercises)
     .select();
+
   if (error) throw new Error("Exercise could not be added");
 
   return data;
@@ -131,7 +137,10 @@ export async function getUserExercise(id: number) {
   return data;
 }
 export async function getUserExercises() {
-  const { data, error } = await supabase.from("user_exercises").select();
+  const { data, error } = await supabase
+    .from("user_exercises")
+    .select()
+    .order("created_at", { ascending: true });
 
   if (error) throw new Error("Exercises could not be loaded");
 
@@ -139,3 +148,17 @@ export async function getUserExercises() {
 }
 
 export async function updateUserExercise() {}
+
+export async function deleteExercise(id: number) {
+  const { data, error: userError } = await supabase.auth.getUser();
+
+  if (userError) throw new Error("User could not be loaded");
+
+  const { error } = await supabase
+    .from("exercises")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", data.user.id);
+
+  if (error) throw new Error("Exercise could not be deleted");
+}

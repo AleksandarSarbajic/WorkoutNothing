@@ -75,6 +75,18 @@ export const StyledNote = styled.div<{ $pinned?: boolean }>`
     & input {
       width: 70%;
     }
+
+    & button {
+      position: absolute;
+      top: 50%;
+      left: 65%;
+      transform: translateY(-50%);
+      outline: none;
+      & svg {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
   }
 `;
 
@@ -155,7 +167,7 @@ export const StyledExercise = styled.div<{ $superSet?: string }>`
   }
 `;
 export const StyledExerciseHeader = styled.div`
-  grid-template-columns: 0.2fr 1fr 1.1fr 1.1fr 0.15fr;
+  grid-template-columns: 0.2fr 1fr 1fr 1fr 0.15fr;
   display: grid;
 
   column-gap: 2.4rem;
@@ -188,7 +200,7 @@ export const CheckAnimation = keyframes`
 
 export const StyledSetButton = styled.span<{ $variation: string }>`
   font-weight: 600;
-  width: 2rem;
+  /* width: 100%; */
   color: var(--color-brand-500);
 
   ${(props) => props.$variation === "warmup" && "color: #fb923c;"}
@@ -244,6 +256,9 @@ export const StyledSet = styled.div<{ $checked: boolean }>`
   }
   @media only screen and (max-width: 31.25em) {
     grid-template-columns: 0.2fr 0.9fr 1fr 1fr 0.1fr;
+    margin: 0.5rem -0.5rem 0.5rem 0;
+    padding-right: 1rem;
+    padding-left: 0.5rem;
   }
   @media only screen and (max-width: 28em) {
     grid-template-columns: 0.2fr 0.9fr 1fr 1fr 0.1fr;

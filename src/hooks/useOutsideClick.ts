@@ -15,6 +15,8 @@ export function useOutsideClick<T extends HTMLElement>(
       const targetId = (e.target as HTMLElement).id;
       if (isHolding) return;
 
+      if (targetId === "darkModeIcon" || targetId === "darkModeButton") return;
+
       if (
         ref.current &&
         !ref.current.contains(e.target as Node) &&

@@ -235,6 +235,7 @@ interface ChangeNotePayload {
   note?: string;
   open?: boolean;
   pin?: boolean;
+  deleteNote?: boolean;
 }
 
 export function WORKOUT_REDUCER(
@@ -529,20 +530,31 @@ function changeNote(
   state: InitialStateType,
   payload: ChangeNotePayload
 ): InitialStateType {
-  const { type, id, note, open, pin } = payload;
+  const { type, id, note, open, pin, deleteNote } = payload;
+
   if (type === "workout") {
     return { ...state, note: note || "" };
   }
 
   const updatedExercises = state.exercises.map((item) => {
     if (item.note.uniqueId === id) {
-      const updatedNote = {
-        ...item.note,
-        isOpen: open !== undefined ? open : item.note.isOpen,
-      };
-      if (note !== undefined) updatedNote.value = note;
-      if (pin !== undefined) updatedNote.isPinned = pin;
-      return { ...item, note: updatedNote };
+      if (!deleteNote) {
+        const updatedNote = {
+          ...item.note,
+          isOpen: open !== undefined ? open : item.note.isOpen,
+        };
+        if (note !== undefined) updatedNote.value = note;
+        if (pin !== undefined) updatedNote.isPinned = pin;
+        return { ...item, note: updatedNote };
+      } else {
+        const updatedNote = {
+          ...item.note,
+          isOpen: open !== undefined ? open : item.note.isOpen,
+          value: "",
+          isPinned: false,
+        };
+        return { ...item, note: updatedNote };
+      }
     }
     return item;
   });

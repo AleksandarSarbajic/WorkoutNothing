@@ -461,6 +461,8 @@ function ExerciseHeading({
     state: { exercises },
   } = useContext(WorkoutContext);
 
+  const exercise = exercises.find((exercise) => exercise.uniqueId === uniqueId);
+
   const callback = useCallback(() => {
     openModal(`CreateNigga-${uniqueId}`);
   }, [openModal, uniqueId]);
@@ -509,17 +511,24 @@ function ExerciseHeading({
       </button>
       <Menus.Toggle id={uniqueId} />
       <Menus.List id={uniqueId}>
-        <Menus.Button
-          icon={<HiDocumentText />}
-          onClick={() => {
-            dispatch({
-              type: ActionTypes.CHANGE_NOTE,
-              payload: { id: noteId, type: "exercise", open: true },
-            });
-          }}
-        >
-          Add Note
-        </Menus.Button>
+        {
+          <Menus.Button
+            icon={<HiDocumentText />}
+            onClick={() => {
+              dispatch({
+                type: ActionTypes.CHANGE_NOTE,
+                payload: {
+                  id: noteId,
+                  type: "exercise",
+                  open: !exercise?.note.isOpen,
+                  deleteNote: exercise?.note.isOpen,
+                },
+              });
+            }}
+          >
+            {!exercise?.note.isOpen ? "Add Note" : "Remove Note"}
+          </Menus.Button>
+        }
         <Modal.Open
           opens={`Create SuperSet--${uniqueId}`}
           withOpens={() => {
@@ -862,6 +871,7 @@ function SetButton({
           <StyledSetButton $variation={set.type}>{textTypes}</StyledSetButton>
         }
         direction="right"
+        additional={100}
       />
       <Menus.List id={set.id}>
         <Menus.Button
@@ -894,7 +904,6 @@ function SetButton({
               style={{
                 marginLeft: "-0.6rem",
                 marginRight: "0.5rem",
-                width: "2rem",
                 color: "var(--color-brand-500)",
               }}
             />
@@ -906,7 +915,7 @@ function SetButton({
             });
           }}
         >
-          Delete Set
+          <div>Delete Set</div>
         </Menus.Button>
       </Menus.List>
     </div>
@@ -962,7 +971,7 @@ function Set({
             adjustMeasurement(+previous[0], exercise?.unit ?? "kg", settings)
               .unit +
             " x " +
-            set.reps}
+            previous[1]}
       </button>
       <input
         id={`${set.uniqueId}-${set.id}-value-${set.set}`}
@@ -1148,13 +1157,13 @@ function Finish() {
           current: true,
         };
 
-        if (
-          recordToBeAdded.RM === null &&
-          recordToBeAdded.volume === null &&
-          recordToBeAdded.weight === null
-        ) {
-          return exercise;
-        }
+        // if (
+        //   recordToBeAdded.RM === null &&
+        //   recordToBeAdded.volume === null &&
+        //   recordToBeAdded.weight === null
+        // ) {
+        //   return exercise;
+        // }
 
         return {
           ...exercise,

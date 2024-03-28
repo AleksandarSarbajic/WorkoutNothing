@@ -17,6 +17,11 @@ const Container = styled.div`
     height: 15rem;
     object-fit: cover;
   }
+
+  @media only screen and (max-width: 50em) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const StyledBox = styled.div`

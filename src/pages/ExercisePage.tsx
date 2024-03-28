@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import ButtonText from "../UI/ButtonText";
 import ExerciseSection from "../UI/ExerciseSection";
 import Heading from "../UI/Heading";
@@ -8,6 +9,14 @@ import TableOperations from "../UI/TableOperations";
 
 import useExercise from "../features/exercises/useExercise";
 import { useMoveBack } from "../hooks/useMoveBack";
+
+const ExerciseHeading = styled(Row)`
+  @media only screen and (max-width: 50em) {
+    flex-direction: column;
+    align-items: center;
+    gap: 3.4rem;
+  }
+`;
 
 function ExercisePage() {
   const { exercise, isLoading } = useExercise();
@@ -35,12 +44,12 @@ function ExercisePage() {
         </ButtonText>
         <div />
       </Row>
-      <Row $type="horizontal">
+      <ExerciseHeading $type="horizontal">
         <Heading as="h1">{exercise?.name}</Heading>
         <TableOperations>
           <PageFilter filterField="page" options={options} />
         </TableOperations>
-      </Row>
+      </ExerciseHeading>
       <Row>
         {isLoading ? <Spinner /> : <ExerciseSection exercise={exercise} />}
       </Row>
