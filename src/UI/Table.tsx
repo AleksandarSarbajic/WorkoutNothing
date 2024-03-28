@@ -46,6 +46,7 @@ const StyledHeader = styled(CommonRow)`
 const StyledRow = styled(CommonRow)<{
   $measure?: boolean;
   $selected?: boolean;
+  $responsive?: string;
 }>`
   padding: 1.2rem 2.4rem;
   ${(props) =>
@@ -63,6 +64,14 @@ const StyledRow = styled(CommonRow)<{
     `}
   &:not(:last-child) {
     border-bottom: 1px solid var(--color-grey-100);
+  }
+
+  @media only screen and (max-width: 37.5em) {
+    ${(props) =>
+      props.$responsive &&
+      css`
+        column-gap: 1rem;
+      `}
   }
 `;
 
@@ -122,16 +131,19 @@ function Row({
   measure,
   onClick,
   selected,
+  responsive,
 }: {
   children: React.ReactNode;
   measure?: boolean;
   onClick?: () => void;
   selected?: boolean;
+  responsive?: string;
 }) {
   const { columns } = useContext(TableContext);
   return (
     <StyledRow
       role="row"
+      $responsive={responsive}
       $columns={columns}
       $measure={measure}
       $selected={selected}

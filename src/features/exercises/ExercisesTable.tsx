@@ -1,13 +1,19 @@
+import { useState, useEffect } from "react";
 import ExerciseRow from "./ExerciseRow";
-
 import Table from "../../UI/Table";
 import Menus from "../../context/Menus";
-
 import useExercises from "./useExercises";
 import useFilter from "../../hooks/useFilter";
 import { ExerciseType } from "../../types/WorkoutTypes";
 import { useUser } from "../auth/useUser";
 import useRecordsExercises from "./useRecordsExercises";
+import styled from "styled-components";
+
+const StyledDifficulty = styled.div`
+  @media only screen and (max-width: 37.5em) {
+    display: none;
+  }
+`;
 
 function ExercisesTable({ type }: { type?: string }) {
   const { user } = useUser();
@@ -23,17 +29,30 @@ function ExercisesTable({ type }: { type?: string }) {
   const { user_exercises, isLoading: isLoadingExercises } =
     useRecordsExercises();
 
+  const [columns, setColumns] = useState("4fr 1.5fr 1.5fr 1.5fr 1fr");
+
+  useEffect(() => {
+    const screenWidth = window.innerWidth;
+    if (screenWidth < 768) {
+      setColumns("4fr 1.5fr 1.5fr 0.5fr");
+    } else {
+      setColumns("4fr 1.5fr 1.5fr 1.5fr 1fr");
+    }
+  }, []);
+
   const filteredExercises = exercises.filter(
     (exercise) => exercise.user_id === user?.id || exercise.user_id === null
   );
+
   return (
     <Menus>
-      <Table columns="4fr 1.5fr 1.5fr 1.5fr 1fr">
+      <Table columns={columns}>
         <Table.Header>
           <div>Exercise</div>
           <div>Muscle</div>
           <div>Category</div>
-          <div>Difficulty</div>
+
+          <StyledDifficulty>Difficulty</StyledDifficulty>
           <div></div>
         </Table.Header>
 

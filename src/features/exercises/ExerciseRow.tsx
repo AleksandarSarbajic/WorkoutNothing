@@ -29,6 +29,12 @@ import {
 import AddExerciseForm from "../../UI/AddExerciseForm";
 import { adjustMeasurement, generateNumericUUID } from "../../utils/helpers";
 
+const StyledDifficulty = styled.div`
+  @media only screen and (max-width: 37.5em) {
+    display: none;
+  }
+`;
+
 const Exercise = styled.p`
   font-size: 1.6rem;
   font-weight: 600;
@@ -189,12 +195,13 @@ function ExerciseRow({
       measure={type === "add"}
       selected={(isSelected && type === "add") as boolean}
       onClick={onSelectHandler}
+      responsive="2rem"
     >
       <>
         <Exercise>{name}</Exercise>
         <div>{muscle.replace(/_/g, " ")}</div>
         <div>{equipment.replace(/_/g, " ")}</div>
-        <div>{difficulty}</div>
+        <StyledDifficulty>{difficulty}</StyledDifficulty>
         {type !== "add" && (
           <div>
             <Modal>
