@@ -8,6 +8,7 @@ import { useSettings } from "../features/settings/useSettings";
 import Table from "./Table";
 import { ONE_RM_CALCULATION } from "../utils/constants";
 import CalculatorRow from "./CalculatorRow";
+import { oneRepMax } from "../utils/helpers";
 
 const StyledSelect = styled.select<{ $type?: string }>`
   width: 10rem;
@@ -61,7 +62,9 @@ function Calculator() {
 
   const oneRepMaxes = ONE_RM_CALCULATION.map(
     (item: { repetitions: number; percentage: number }, i: number) => {
-      const oneRm = Math.round(+lift * repetitions * item.percentage) / 100;
+      const oneRm =
+        Math.round((oneRepMax(+lift, repetitions) ?? 0) * item.percentage) /
+        100;
       return {
         repetitions: i + 1,
         weight: oneRm,

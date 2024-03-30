@@ -419,10 +419,23 @@ function TimerModal() {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function useTimerHandler() {
-  const { timerHandler, minutes, seconds, customTimerIsOpen, handleRestart } =
-    useContext(TimerContext);
+  const {
+    timerHandler,
+    minutes,
+    seconds,
+    customTimerIsOpen,
+    handleRestart,
+    open,
+  } = useContext(TimerContext);
 
-  return { timerHandler, minutes, seconds, customTimerIsOpen, handleRestart };
+  return {
+    timerHandler,
+    minutes,
+    seconds,
+    customTimerIsOpen,
+    handleRestart,
+    open,
+  };
 }
 
 Timer.Toggle = TimerToggle;

@@ -1,4 +1,8 @@
-import { ExerciseType } from "../types/WorkoutTypes";
+import {
+  ExerciseType,
+  SuperSetType,
+  WorkoutSupabase,
+} from "../types/WorkoutTypes";
 import supabase from "./supabase";
 import { Database } from "./supabase";
 interface GetExercisesProps {
@@ -154,11 +158,62 @@ export async function deleteExercise(id: number) {
 
   if (userError) throw new Error("User could not be loaded");
 
-  const { error } = await supabase
+  const { data: workoutData, error: workoutError } = await supabase
+    .from("Workouts")
+    .select()
+    .eq("user_id", data.user.id);
+
+  if (workoutError) throw new Error("Workouts could not be loaded");
+
+  const filteredWorkouts = workoutData.map((workout: WorkoutSupabase) => {
+    const removedExercises = workout.exercises.filter(
+      (exercise: ExerciseType) => exercise.id === id
+    );
+
+    const filteredSuperSets = workout.superSets.filter(
+      (superSet: SuperSetType) =>
+        superSet.items.every(
+          (itemId) =>
+            !removedExercises.some((exercise) => exercise.uniqueId === itemId)
+        )
+    );
+
+    const filteredExercises = workout.exercises.filter(
+      (exercise: ExerciseType) => exercise.id !== id
+    );
+
+    return {
+      ...workout,
+      exercises: filteredExercises,
+      superSets: filteredSuperSets,
+    };
+  });
+
+  const { error: userExerciseError } = await supabase
+    .from("user_exercises")
+    .delete()
+    .eq("exercise_id", id)
+    .eq("user_id", data.user.id);
+
+  if (userExerciseError) throw new Error("Exercise could not be deleted");
+
+  const { error: exerciseError } = await supabase
     .from("exercises")
     .delete()
     .eq("id", id)
     .eq("user_id", data.user.id);
 
-  if (error) throw new Error("Exercise could not be deleted");
+  if (exerciseError) throw new Error("Exercise could not be deleted");
+
+  // Now update the Workouts
+  for (const filteredWorkout of filteredWorkouts) {
+    const { error: updateError } = await supabase
+      .from("Workouts")
+      .update(filteredWorkout)
+      .eq("id", filteredWorkout.id);
+
+    if (updateError) {
+      throw new Error("Workouts could not be updated");
+    }
+  }
 }

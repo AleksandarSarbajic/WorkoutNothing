@@ -96,17 +96,22 @@ export async function updateCurrentUser({
   return data;
 }
 
+import Resizer from "react-image-file-resizer";
+
 export async function updateUserAvatar({ avatar }: Update) {
   const { data, error } = await supabase.auth.getUser();
 
   if (error) throw new Error(error.message);
   if (!avatar) return data;
 
+  // Compress and resize avatar image
+  const compressedAvatar = await compressAndResizeImage(avatar);
+
   const fileName = `avatar-${data.user.id}-${self.crypto.randomUUID()}`;
 
   const { error: storageError } = await supabase.storage
     .from("avatars")
-    .upload(fileName, avatar);
+    .upload(fileName, compressedAvatar);
 
   if (storageError) throw new Error(storageError.message);
 
@@ -120,6 +125,27 @@ export async function updateUserAvatar({ avatar }: Update) {
 
   if (error2) throw new Error(error2.message);
   return updatedUser;
+}
+
+async function compressAndResizeImage(imageFile: Blob) {
+  return new Promise((resolve) => {
+    const maxWidth = 300;
+    const maxHeight = 300;
+    const quality = 75;
+
+    Resizer.imageFileResizer(
+      imageFile,
+      maxWidth,
+      maxHeight,
+      "WEBP",
+      quality,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "blob"
+    );
+  });
 }
 
 export async function deleteAvatar() {

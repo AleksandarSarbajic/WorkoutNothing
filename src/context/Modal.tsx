@@ -172,7 +172,7 @@ function Window({
 
   return (
     <Overlay id="overlay">
-      <StyledModal ref={ref} $padding={padding}>
+      <StyledModal ref={ref} $padding={padding} id={name}>
         <Button
           onClick={() => {
             if (addition) {

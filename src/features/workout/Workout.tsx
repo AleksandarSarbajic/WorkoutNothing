@@ -225,14 +225,16 @@ function Exercise({ exercise }: { exercise: ExerciseType }) {
         <div>Reps</div>
         <div></div>
       </StyledExerciseHeader>
-      {exercise.sets.map((item) => (
-        <Set
-          key={item.id}
-          set={item}
-          uniqueId={exercise.uniqueId}
-          time={exercise.time}
-        />
-      ))}
+      <Modal>
+        {exercise.sets.map((item) => (
+          <Set
+            key={item.id}
+            set={item}
+            uniqueId={exercise.uniqueId}
+            time={exercise.time}
+          />
+        ))}
+      </Modal>
 
       <button style={{ textAlign: "center" }} onClick={onAddSetHandler}>
         Add Set
@@ -464,7 +466,7 @@ function ExerciseHeading({
   const exercise = exercises.find((exercise) => exercise.uniqueId === uniqueId);
 
   const callback = useCallback(() => {
-    openModal(`CreateNigga-${uniqueId}`);
+    openModal(`sort-exercises-${uniqueId}`);
   }, [openModal, uniqueId]);
 
   const bind = useLongPress(callback, {
@@ -530,7 +532,7 @@ function ExerciseHeading({
           </Menus.Button>
         }
         <Modal.Open
-          opens={`Create SuperSet--${uniqueId}`}
+          opens={`Create-SuperSet--${uniqueId}`}
           withOpens={() => {
             dispatch({
               type: ActionTypes.CREATE_SUPER_SET,
@@ -570,12 +572,12 @@ function ExerciseHeading({
             </>
           )}
         </Menus.Button>
-        <Modal.Open opens={`${uniqueId}`}>
+        <Modal.Open opens={`confirm-delete${uniqueId}`}>
           <Menus.Button icon={<HiTrash />}>Delete exercise</Menus.Button>
         </Modal.Open>
       </Menus.List>
       <Modal.Window
-        name={`CreateNigga-${uniqueId}`}
+        name={`sort-exercises-${uniqueId}`}
         id={uniqueId.toString()}
         addition={() => {
           dispatch({
@@ -598,7 +600,7 @@ function ExerciseHeading({
         />
       </Modal.Window>
       <Modal.Window
-        name={`Create SuperSet--${uniqueId}`}
+        name={`Create-SuperSet--${uniqueId}`}
         key={uniqueId}
         addition={() => {
           dispatch({
@@ -937,6 +939,7 @@ function Set({
   } = useContext(WorkoutContext);
   const isChecked = set.selected;
   const { timerHandler } = useTimerHandler();
+
   const { settings } = useSettings();
   const exercise = exercises.find((item) => item.uniqueId === uniqueId);
   const previous = set.previous?.split(" x ");
@@ -956,7 +959,13 @@ function Set({
             payload: {
               setId: set.id,
               exerciseId: uniqueId,
-              weight: +previous[0],
+              weight: Math.round(
+                +adjustMeasurement(
+                  +previous[0],
+                  exercise?.unit ?? "kg",
+                  settings
+                ).value
+              ),
               reps: +previous[1],
             },
           });
@@ -1009,6 +1018,7 @@ function Set({
           })
         }
       />
+
       <button
         disabled={template}
         onClick={() => {
@@ -1156,14 +1166,6 @@ function Finish() {
           unit: settings?.weight || "kg",
           current: true,
         };
-
-        // if (
-        //   recordToBeAdded.RM === null &&
-        //   recordToBeAdded.volume === null &&
-        //   recordToBeAdded.weight === null
-        // ) {
-        //   return exercise;
-        // }
 
         return {
           ...exercise,
