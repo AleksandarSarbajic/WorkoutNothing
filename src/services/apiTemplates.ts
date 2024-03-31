@@ -51,7 +51,8 @@ export async function getTemplates() {
   const { data, error } = await supabase
     .from("Templates")
     .select()
-    .eq("user_id", userData?.user.id);
+    .eq("user_id", userData?.user.id)
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(error.message);

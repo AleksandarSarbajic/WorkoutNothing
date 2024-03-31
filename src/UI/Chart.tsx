@@ -76,12 +76,14 @@ function Chart({ values, heading }: ChartProps) {
             dataKey="label"
             tick={{ fill: colors.text }}
             tickLine={{ stroke: colors.text }}
+            tickMargin={10}
           />
           <YAxis
             dataKey={"value"}
             unit={data[0]?.unit !== undefined ? data[0].unit : "kg"}
             tick={{ fill: colors.text }}
             tickLine={{ stroke: colors.text }}
+            tickMargin={10}
           />
           <CartesianGrid strokeDasharray="4" />
           <Tooltip contentStyle={{ backgroundColor: colors.background }} />

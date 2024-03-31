@@ -26,6 +26,7 @@ const Button = styled.button`
   font-size: 2rem;
   width: 100%;
   background-color: var(--color-brand-500);
+  color: var(--color-brand-100);
   border-radius: var(--border-radius-sm);
   padding: 1.2rem 2rem;
   margin-top: 5rem;

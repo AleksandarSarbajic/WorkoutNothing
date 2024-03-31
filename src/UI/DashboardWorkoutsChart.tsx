@@ -117,7 +117,7 @@ function DashboardWorkoutsChart({ workouts, heading }: ChartProps) {
             tickLine={{ stroke: colors.text }}
             style={{ padding: "1rem" }}
             padding={{ left: 0, right: 20 }}
-            // tickMargin={15}
+            tickMargin={5}
           />
 
           <CartesianGrid strokeDasharray="4" />

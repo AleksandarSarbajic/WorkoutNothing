@@ -19,6 +19,7 @@ const Button = styled.button`
   border-radius: var(--border-radius-sm);
   padding: 1.2rem 2rem;
   margin-top: 5rem;
+  color: var(--color-brand-100);
 
   &:hover {
     background-color: var(--color-brand-600);

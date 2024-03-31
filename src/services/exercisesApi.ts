@@ -205,7 +205,6 @@ export async function deleteExercise(id: number) {
 
   if (exerciseError) throw new Error("Exercise could not be deleted");
 
-  // Now update the Workouts
   for (const filteredWorkout of filteredWorkouts) {
     const { error: updateError } = await supabase
       .from("Workouts")

@@ -9,6 +9,7 @@ const MeasureItem = styled.button`
   justify-content: space-between;
   padding: 0.7rem 1rem;
   margin: 0 -1rem;
+  gap: 1rem;
   border-radius: var(--border-radius-sm);
   &:hover {
     background-color: var(--color-grey-200);
@@ -27,7 +28,7 @@ function MeasureItemRow({ item }: { item: SingleMeasure }) {
       }}
     >
       <MeasureItem>
-        <p>{formattedDate || "None"}</p>
+        <p>{formattedDate || "None"} :</p>
         <p>
           {item.value || "none"} {item.unit || ""}
         </p>

@@ -142,23 +142,25 @@ function ExerciseRecapItem({
                 <div>
                   {exerciseFiltered[0].records.map((record) => {
                     if (
-                      record.weight.setId === set.id ||
-                      record.volume.setId === set.id ||
-                      record.RM.setId === set.id
+                      record.weight?.setId === set.id ||
+                      record.volume?.setId === set.id ||
+                      record.RM?.setId === set.id
                     ) {
                       return (
                         <StyledRecordBox key={record.id}>
-                          {record.weight.setId === set.id && (
-                            <StyledRecord>
-                              <FaTrophy /> <span>Weight</span>
-                            </StyledRecord>
-                          )}
-                          {record.volume.setId === set.id && (
-                            <StyledRecord>
-                              <FaTrophy /> <span>Volume</span>
-                            </StyledRecord>
-                          )}
-                          {record.RM.setId === set.id && (
+                          {record.weight !== null &&
+                            record.weight.setId === set.id && (
+                              <StyledRecord>
+                                <FaTrophy /> <span>Weight</span>
+                              </StyledRecord>
+                            )}
+                          {record.volume !== null &&
+                            record.volume.setId === set.id && (
+                              <StyledRecord>
+                                <FaTrophy /> <span>Volume</span>
+                              </StyledRecord>
+                            )}
+                          {record.RM !== null && record.RM.setId === set.id && (
                             <StyledRecord>
                               <FaTrophy /> <span>1 RM</span>
                             </StyledRecord>
