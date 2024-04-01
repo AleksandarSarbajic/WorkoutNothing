@@ -21,7 +21,7 @@
 <img src="https://img.shields.io/badge/supabase-v2.38.4-green?logo=supabase"/>
 </div>
 
-<p  align="center">NothingTodo is a todo list app that is inspired by the design of Nothing Company.</p>
+<p  align="center">WorkoutNothing keep the track of your progress in training.</p>
 
 <div  align="center">
 
