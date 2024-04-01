@@ -111,7 +111,7 @@ export async function updateUserAvatar({ avatar }: Update) {
 
   const { error: storageError } = await supabase.storage
     .from("avatars")
-    .upload(fileName, compressedAvatar);
+    .upload(fileName, compressedAvatar as File);
 
   if (storageError) throw new Error(storageError.message);
 
