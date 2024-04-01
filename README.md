@@ -131,9 +131,9 @@ ReactQuery is used across the entire project to provide the fastest performance,
 
 ![screencapture-localhost-5173-one-rep-max-calculator-2024-03-31-17_33_15](https://github.com/AleksandarSarbajic/WorkoutNothing/assets/114814838/b3ccfebf-c2c8-40c8-b326-26e4d998c166)
 
-### Analytics
+### Login
 
-![analyticsTodo](https://github.com/AleksandarSarbajic/NothingTodo/assets/114814838/9965c37e-e02f-4831-9b5e-9c1de2f296b7)
+![screencapture-localhost-5173-login-2024-03-31-17_33_49](https://github.com/AleksandarSarbajic/WorkoutNothing/assets/114814838/90728deb-af7d-4171-b451-32e8a18320a1)
 
 ## You may also like...
 
