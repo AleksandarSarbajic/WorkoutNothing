@@ -97,9 +97,9 @@ $ npm run start
 
 ## How It Works
 
-The Nothing To-Do is a React-TypeScript application build for task management. This was my first big project using TypeScript with React. This application includes a lot of connections with Supabase so everyone can have the same overall experience to stay updated with their tasks.
+WorkoutNothing is a React-TypeScript application build for people who want to track their workouts and progress in the gym. Applications has a lot of features as logging your workout and exercises, keeping the track of progress in certain exercises, keeping the track of your body measurements and a lot more.
 
-I chose React for this application because I wanted to practice using React with TypeScript. For data base I chose Supabase with incredible support for TypeScript and very good combination with ReactQuery.
+I chose React for this application because I wanted to practice using React with TypeScript and want to have an application where I can log my workouts. For database I chose Supabase with incredible support for TypeScript and very good combination with ReactQuery.
 
 ReactQuery is used across the entire project to provide the fastest performance, because we can store stale data in it and as we go to the same page that is using that data loading will be significantly faster. Reach Hook Form came first in mind for using the forms, because how fast and easy you can work with it. In this project I went for mobile first option for responsive using styled components. Netlify is also an obvious choice for deployment because of its speed and reliability.
 
