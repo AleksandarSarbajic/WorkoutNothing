@@ -42,7 +42,7 @@ const GlobalStyles = createGlobalStyle`
     --image-grayscale: 0;
   --image-opacity: 100%;
 
-  --bg-color:#efefef;
+  --bg-color:#000;
 
   --workout-bg-color:rgba(31, 41, 55, 0.01);
   --workout-hover-color:rgba(31, 41, 55, 0.05);
@@ -225,6 +225,29 @@ img {
 
   filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
 }
+
+
+
+input,
+a,
+button,
+textarea,
+label,
+select {
+
+  @media only screen and (max-width: 50em){
+    font: inherit;
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
 
 
 ${PickerStyles}

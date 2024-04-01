@@ -6,7 +6,6 @@
  <h1>NothingTodo</h1>
 </div>
 
-
 <div align="center">
 <img src="https://img.shields.io/npm/v/npm.svg?logo=npm"/>
 <img src="https://img.shields.io/badge/react-v18.2.0-blue?logo=react"/>
@@ -67,8 +66,6 @@ $ npm run start
 
 ## How It Works
 
-
-
 The Nothing To-Do is a React-TypeScript application build for task management. This was my first big project using TypeScript with React. This application includes a lot of connections with Supabase so everyone can have the same overall experience to stay updated with their tasks.
 
 I chose React for this application because I wanted to practice using React with TypeScript. For data base I chose Supabase with incredible support for TypeScript and very good combination with ReactQuery.
@@ -80,7 +77,6 @@ ReactQuery is used across the entire project to provide the fastest performance,
 ![dashboardTodo](https://github.com/AleksandarSarbajic/NothingTodo/assets/114814838/e158fe48-e859-481e-970c-67f63d0a8b88)
 
 ### Settings page
-
 
 ![settingsTodo](https://github.com/AleksandarSarbajic/NothingTodo/assets/114814838/0821ef74-e2f4-4b13-8bb8-925588dab1f2)
 
@@ -97,9 +93,8 @@ ReactQuery is used across the entire project to provide the fastest performance,
 ![loginTodo](https://github.com/AleksandarSarbajic/NothingTodo/assets/114814838/bc3217ee-4e4e-4b7e-aa1d-e2db5f8da8d6)
 
 ### Analytics
+
 ![analyticsTodo](https://github.com/AleksandarSarbajic/NothingTodo/assets/114814838/9965c37e-e02f-4831-9b5e-9c1de2f296b7)
-
-
 
 ## You may also like...
 

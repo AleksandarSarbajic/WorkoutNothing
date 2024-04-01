@@ -73,7 +73,7 @@ export const PickerStyles = css`
     border: none;
   }
   .react-datepicker__day {
-    color: var(--color-grey-200);
+    color: var(--color-grey-400);
     padding: 0.6rem 0 0.6rem;
     margin: 1rem 0.5rem;
     width: 4rem !important;
@@ -108,12 +108,6 @@ export const PickerStyles = css`
     border-radius: 2rem;
   }
 
-  .react-datepicker__month {
-  }
-
-  .react-datepicker__week {
-  }
-
   .react-datepicker {
     background-color: transparent;
   }
@@ -141,8 +135,7 @@ export const PickerStyles = css`
     background-color: var(--color-grey-100);
 
     padding: 2rem 0 1rem 0;
-    /* border-top-left-radius: 5rem;
-    border-top-right-radius: 5rem; */
+
     border-bottom: none;
   }
   .react-datepicker__navigation--next {
