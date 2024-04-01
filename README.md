@@ -2,7 +2,7 @@
 
 <img  width="300"  src="https://github.com/AleksandarSarbajic/WorkoutNothing/assets/114814838/77ed7c3d-a54d-4f9d-8680-eef1e89a82c6"/>
 
-
+</div>
 
   
 
