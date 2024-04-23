@@ -16,11 +16,16 @@ const Container = styled.div`
     width: 15rem;
     height: 15rem;
     object-fit: cover;
+    margin: 1rem 0;
   }
 
   @media only screen and (max-width: 50em) {
     flex-direction: column;
     align-items: flex-start;
+
+    img {
+      margin: 2.4rem 0;
+    }
   }
 `;
 
@@ -90,11 +95,7 @@ function UpdateAvatar({ avatar }: { avatar: string }) {
         </Button>
       </StyledBox>
       <div>
-        <img
-          src={avatar || "/default-user.jpg"}
-          alt="Avatar"
-          // style={{ width: "100%", borderRadius: "0.5rem" }}
-        />
+        <img src={avatar || "/default-user.jpg"} alt="Avatar" />
       </div>
     </Container>
   );

@@ -12,12 +12,15 @@ import { oneRepMax } from "../utils/helpers";
 
 const StyledSelect = styled.select<{ $type?: string }>`
   width: 10rem;
-  margin-left: -2.4rem;
+
   border: 1px solid var(--color-grey-300);
   background-color: var(--color-grey-0);
   border-radius: var(--border-radius-sm);
   padding: 0.85rem 1.2rem;
   box-shadow: var(--shadow-sm);
+  @media only screen and (max-width: 27.5em) {
+    width: 100%;
+  }
 `;
 
 const StyledBox = styled.div`
@@ -46,10 +49,27 @@ const StyledBox = styled.div`
   }
   label {
     width: 25%;
+    min-width: 9rem;
     font-weight: 500;
   }
   input {
     width: 30rem;
+  }
+
+  @media only screen and (max-width: 50em) {
+    gap: 2rem;
+    input {
+      width: 20rem;
+    }
+  }
+  @media only screen and (max-width: 27.5em) {
+    input {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    div {
+      width: 100%;
+    }
   }
 `;
 
@@ -85,20 +105,22 @@ function Calculator() {
       >
         <StyledBox>
           <label htmlFor="lift">Lift</label>
-          <Input
-            value={lift}
-            type="number"
-            onChange={(e) => setLift(e.target.value)}
-            id="lift"
-            required
-          />
-          <StyledSelect
-            defaultValue={unit}
-            onChange={(e) => setUnit(e.target.value)}
-          >
-            <option value="kg">kg</option>
-            <option value="lbs">lbs</option>
-          </StyledSelect>
+          <div>
+            <Input
+              value={lift}
+              type="number"
+              onChange={(e) => setLift(e.target.value)}
+              id="lift"
+              required
+            />
+            <StyledSelect
+              defaultValue={unit}
+              onChange={(e) => setUnit(e.target.value)}
+            >
+              <option value="kg">kg</option>
+              <option value="lbs">lbs</option>
+            </StyledSelect>
+          </div>
         </StyledBox>
 
         <StyledBox>
@@ -112,7 +134,7 @@ function Calculator() {
             required
           />
         </StyledBox>
-        <FormRow>
+        <FormRow buttons={true}>
           <Button $variation="secondary">Cancel</Button>
           <Button>Calculate One Rep Max</Button>
         </FormRow>

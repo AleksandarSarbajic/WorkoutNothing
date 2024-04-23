@@ -301,7 +301,7 @@ export const findIndexOfHighestItem = (arr: number[][]): number[] => {
 
 export const oneRepMax = (weight: number | null, reps: number | null) => {
   if (reps !== null && weight !== null) {
-    return +(weight / (1.0278 - 0.0278 * reps)).toFixed(2);
+    return Math.round(+(weight * (1 + 0.0333 * reps)).toFixed(2));
   }
   return null;
 };

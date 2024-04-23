@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ExerciseType, SetType } from "../../types/WorkoutTypes";
 import { useSettings } from "../settings/useSettings";
 import { ONE_RM_PERCENTAGE } from "../../utils/constants";
+import Spinner from "../../UI/Spinner";
 
 const StyledRecord = styled.div`
   display: flex;
@@ -30,6 +31,8 @@ const StyledP = styled.p`
 function ExerciseRecords() {
   const { settings } = useSettings();
   const { user_exercise = [], isLoading } = useRecordsExercise();
+
+  if (isLoading) return <Spinner />;
 
   if (user_exercise.length === 0)
     return (
